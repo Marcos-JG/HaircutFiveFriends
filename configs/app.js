@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
+import createHaircut from '../src/haircut/haircut.router.js';
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
@@ -18,6 +19,10 @@ const middlewares = (app) => {
 }
 
 const routes = (app) => {
+
+    
+    app.use(`${BASE_PATH}/haircuts`, createHaircut);
+
     app.get(`${BASE_PATH}/Health`, (request, response) => {
         response.status(200).json({
             status: 'Healthy',
