@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
+import serviceRoutes from '../src/service/service.routes.js';
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
@@ -26,6 +27,7 @@ const routes = (app) => {
         });
 
     })
+    app.use(`${BASE_PATH}/service`, serviceRoutes);
     app.use((req, res) => {
         res.status(404).json({
             success: false,
