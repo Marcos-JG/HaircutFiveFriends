@@ -3,15 +3,22 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import multer from 'multer';
 import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
+import clientRoutes from '../src/client/client.routes.js';
+import barberRoutes from '../src/barber/barber.routes.js';
+import favoritesRoutes from '../src/favorites/favorites.routes.js';
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false, limit: '10mb' }));
     app.use(express.json({ limit: '10mb' }))
+    // parse multipart/form-data (e.g., form-data from Postman)
+    const upload = multer();
+    app.use(upload.any());
     app.use(cors(corsOptions));
     app.use(helmet(helmetConfiguration));
     app.use(morgan('dev'));
@@ -26,6 +33,9 @@ const routes = (app) => {
         });
 
     })
+    app.use(`${BASE_PATH}/clients`, clientRoutes);
+    app.use(`${BASE_PATH}/barbers`, barberRoutes);
+    app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
     app.use((req, res) => {
         res.status(404).json({
             success: false,
