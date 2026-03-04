@@ -11,15 +11,16 @@ import {
     getServicesByName,
     getServicesByStatus 
 } from './service.controller.js';
+import { validateCreateService, validateUpdateService } from '../../middlewares/service-validator.js';
 
 const router = express.Router();
 const parseFormData = multer().none();
 
 // Rutas principales
-router.post('/crear', parseFormData, createService);    // POST - Crear servicio
+router.post('/crear', parseFormData, validateCreateService, createService);    // POST - Crear servicio
 router.get('/obtener', getAllServices);                 // GET - Obtener todos
 router.get('/obtener/:id', getServiceById);             // GET - Obtener por ID
-router.put('/actualizar/:id', parseFormData, updateService); // PUT - Actualizar servicio
+router.put('/actualizar/:id', parseFormData, validateUpdateService, updateService); // PUT - Actualizar servicio
 router.delete('/eliminar/:id', deleteService);          // DELETE - Eliminar servicio
 
 // Rutas de filtrado

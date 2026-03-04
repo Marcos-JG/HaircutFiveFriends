@@ -63,5 +63,4 @@ clientSchema.pre('save', async function () {
 });
 
 clientSchema.index({ userId: 1});
-clientSchema.index({ email: 1 }, { unique: true });
 export default mongoose.model("Client", clientSchema);

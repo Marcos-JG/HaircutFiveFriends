@@ -38,7 +38,7 @@ export const getAllReviews = async (req, res) => {
         const reviews = await Review.find()
             .populate('clienteId', 'name email')
             .populate('barberoId', 'name')
-            .populate('servicioId', 'name category');
+            .populate('servicioId', 'name category price');
         
         res.status(200).json({
             success: true,
@@ -60,7 +60,7 @@ export const getReviewById = async (req, res) => {
         const review = await Review.findById(id)
             .populate('clienteId', 'name email')
             .populate('barberoId', 'name')
-            .populate('servicioId', 'name category');
+            .populate('servicioId', 'name category price');
 
         if (!review) {
             return res.status(404).json({
@@ -146,7 +146,7 @@ export const getReviewsByBarbero = async (req, res) => {
         const { barberoId } = req.params;
         const reviews = await Review.find({ barberoId })
             .populate('clienteId', 'name email')
-            .populate('servicioId', 'name');
+            .populate('servicioId', 'name price');
 
         res.status(200).json({
             success: true,
@@ -167,7 +167,7 @@ export const getReviewsByCliente = async (req, res) => {
         const { clienteId } = req.params;
         const reviews = await Review.find({ clienteId })
             .populate('barberoId', 'name')
-            .populate('servicioId', 'name');
+            .populate('servicioId', 'name price');
 
         res.status(200).json({
             success: true,

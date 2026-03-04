@@ -12,12 +12,7 @@ export const createService = async (req, res) => {
     try {
         const { name, description, price, duration, category, status, points } = req.body;
 
-        // Validar que todos los campos requeridos estén presentes
-        if (!name || !description || !price || !duration || !category) {
-            return res.status(400).json({ 
-                message: 'Por favor complete todos los campos requeridos' 
-            });
-        }
+       
 
         const service = new Service({
             ...req.body,
@@ -154,6 +149,14 @@ export const getServicesByStatus = async (req, res) => {
 
         const services = await Service.find({ status });
 
+        if (services.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `No hay servicios con estado '${status}'`,
+                data: []
+            });
+        }
+
         res.status(200).json({
             success: true,
             message: `Servicios con estado '${status}' obtenidos exitosamente`,
@@ -173,6 +176,14 @@ export const getServicesByName = async (req, res) => {
         const { name } = req.params;
 
         const services = await Service.find({ name });
+
+        if (services.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `No hay servicios de tipo '${name}'`,
+                data: []
+            });
+        }
 
         res.status(200).json({
             success: true,

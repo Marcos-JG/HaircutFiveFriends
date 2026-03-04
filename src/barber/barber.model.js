@@ -65,5 +65,4 @@ barberSchema.pre('save', async function () {
 });
 
 barberSchema.index({ userId: 1 });
-barberSchema.index({ email: 1 }, { unique: true });
 export default mongoose.model("Barber", barberSchema);

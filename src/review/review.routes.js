@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { uploadProfilePicture } from '../../middlewares/file-uploader.js';
 import multer from 'multer';
 import { 
     createReview, 
@@ -13,15 +14,18 @@ import {
     getReviewsByServicio,
     getAverageScoreByBarbero
 } from './review.controller.js';
+import { validateCreateReview, validateUpdateReview } from '../../middlewares/review-validator.js';
 
 const router = express.Router();
 const parseFormData = multer().none();
 
 // Rutas principales
-router.post('/crear', parseFormData, createReview);         // POST - Crear reseña
+router.post('/crear', uploadProfilePicture.none(), validateCreateReview, createReview);                        // POST - Crear reseña
+router.post('/crear', parseFormData, validateCreateReview, createReview);         // POST - Crear reseña
 router.get('/obtener', getAllReviews);                      // GET - Obtener todas
 router.get('/obtener/:id', getReviewById);                  // GET - Obtener por ID
-router.put('/actualizar/:id', parseFormData, updateReview); // PUT - Actualizar reseña
+router.put('/actualizar/:id', uploadProfilePicture.none(), validateUpdateReview, updateReview);                // PUT - Actualizar reseña
+router.put('/actualizar/:id', parseFormData, validateUpdateReview, updateReview); // PUT - Actualizar reseña
 router.delete('/eliminar/:id', deleteReview);               // DELETE - Eliminar reseña
 
 // Rutas de filtrado
