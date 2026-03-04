@@ -985,143 +985,145 @@
             "description": "Obtiene el promedio de calificaci├│n de un barbero"
           }
         }
-        
       ]
     },
-
     {
-      "name": "Crear Producto",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Products",
+      "item": [
+        {
+          "name": "Crear Producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hair Gel Strong Hold\",\n  \"description\": \"Long lasting shiny hair gel\",\n  \"price\": 35,\n  \"stock\": 50,\n  \"category\": \"GEL\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "create"]
+            }
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Hair Gel Strong Hold\",\n  \"description\": \"Long lasting shiny hair gel\",\n  \"price\": 35,\n  \"stock\": 50,\n  \"category\": \"GEL\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/create",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "create"]
-        }
-      }
-    },
-    {
-      "name": "Obtener Todos los Productos",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products"]
-        }
-      }
-    },
-    {
-      "name": "Obtener Producto por ID",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
-        }
-      }
-    },
-    {
-      "name": "Actualizar Producto",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Obtener Todos los Productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"price\": 40,\n  \"stock\": 60\n}"
         },
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
-        }
-      }
-    },
-    {
-      "name": "Eliminar Producto",
-      "request": {
-        "method": "DELETE",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
-        }
-      }
-    },
-    {
-      "name": "Generar Factura PDF",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/invoice/pdf/{{saleId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "invoice", "pdf", "{{saleId}}"]
-        }
-      }
-    },
-    {
-      "name": "Generar Estad├¡sticas PDF",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/statistics/pdf",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "statistics", "pdf"]
-        }
-      }
-    },
-    {
-      "name": "Actualizar Sale a COMPLETADO",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Obtener Producto por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"total\": 200,\n  \"status\": \"COMPLETADO\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/sales/{{saleId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "sales", "{{saleId}}"]
+        {
+          "name": "Actualizar Producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 40,\n  \"stock\": 60\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Producto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
         }
-      }
+      ]
+    },
+    {
+      "name": "Invoice",
+      "item": [
+        {
+          "name": "Generar Factura PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/invoice/pdf/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["invoice", "pdf", "{{saleId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Generar Estad├¡sticas PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/statistics/pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["statistics", "pdf"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complemetary Sales",
+      "item": [
+        {
+          "name": "Actualizar Sale a COMPLETADO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total\": 200,\n  \"status\": \"COMPLETADO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
