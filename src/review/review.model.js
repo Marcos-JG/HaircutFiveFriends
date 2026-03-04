@@ -6,7 +6,7 @@ const reviewSchema = mongoose.Schema(
     {
         clienteId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Client',
             required: [true, 'El ID del cliente es obligatorio']
         },
         barberoId: {

@@ -9,6 +9,10 @@ import { helmetConfiguration } from './helmet-configuration.js';
 import serviceRoutes from '../src/service/service.routes.js';
 import reviewRoutes from '../src/review/review.routes.js';
 
+import clientRoutes from '../src/client/client.routes.js';
+import barberRoutes from '../src/barber/barber.routes.js';
+import favoritesRoutes from '../src/favorites/favorites.routes.js';
+import haircutRoutes from '../src/haircut/haircut.router.js';
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
 const middlewares = (app) => {
@@ -20,6 +24,10 @@ const middlewares = (app) => {
 }
 
 const routes = (app) => {
+
+    
+    app.use(`${BASE_PATH}/haircuts`, haircutRoutes);
+
     app.get(`${BASE_PATH}/Health`, (request, response) => {
         response.status(200).json({
             status: 'Healthy',
@@ -30,6 +38,9 @@ const routes = (app) => {
     })
     app.use(`${BASE_PATH}/service`, serviceRoutes);
     app.use(`${BASE_PATH}/review`, reviewRoutes);
+    app.use(`${BASE_PATH}/clients`, clientRoutes);
+    app.use(`${BASE_PATH}/barbers`, barberRoutes);
+    app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
     app.use((req, res) => {
         res.status(404).json({
             success: false,

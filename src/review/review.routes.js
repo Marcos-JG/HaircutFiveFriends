@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import multer from 'multer';
 import { 
     createReview, 
     getAllReviews,
@@ -14,12 +15,13 @@ import {
 } from './review.controller.js';
 
 const router = express.Router();
+const parseFormData = multer().none();
 
 // Rutas principales
-router.post('/crear', createReview);                        // POST - Crear reseña
+router.post('/crear', parseFormData, createReview);         // POST - Crear reseña
 router.get('/obtener', getAllReviews);                      // GET - Obtener todas
 router.get('/obtener/:id', getReviewById);                  // GET - Obtener por ID
-router.put('/actualizar/:id', updateReview);                // PUT - Actualizar reseña
+router.put('/actualizar/:id', parseFormData, updateReview); // PUT - Actualizar reseña
 router.delete('/eliminar/:id', deleteReview);               // DELETE - Eliminar reseña
 
 // Rutas de filtrado

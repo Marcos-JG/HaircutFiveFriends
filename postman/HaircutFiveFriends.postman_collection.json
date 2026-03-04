@@ -1,0 +1,392 @@
+{
+  "info": {
+    "_postman_id": "b9c0f8a4-0000-4f3b-aaaa-000000000000",
+    "name": "HaircutFiveFriends API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API HaircutFiveFriends con validaciones. Reemplaza {{baseUrl}} por tu servidor\nValor sugerido: http://localhost:3006/HaircutFiveFriends/api/v1\n\nClients y Barbers: email único y minúsculas, phone 8 dígitos, password min 8 chars (mayús+minús+número)\nFavorites: referenceId es ObjectId"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3006/HaircutFiveFriends/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Create Client (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Perez\",\n  \"phone\": \"12345678\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"SecurePass123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Client (form-data)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Juan Perez", "type": "text" },
+                { "key": "phone", "value": "12345678", "type": "text" },
+                { "key": "email", "value": "juan@example.com", "type": "text" },
+                { "key": "password", "value": "SecurePass123", "type": "text" },
+                { "key": "profilePicture", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
+          }
+        },
+        {
+          "name": "Get Clients",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] } }
+        },
+        {
+          "name": "Get Client by ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] } }
+        },
+        {
+          "name": "Update Client (JSON)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nombre Actualizado\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] }
+          }
+        },
+        {
+          "name": "Update Client (form-data)",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Nombre Actualizado", "type": "text" },
+                { "key": "phone", "value": "87654321", "type": "text" },
+                { "key": "email", "value": "nuevo@example.com", "type": "text" },
+                { "key": "faceshape", "value": "oval", "type": "text" },
+                { "key": "profilePicture", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] } }
+        }
+      ]
+    },
+    {
+      "name": "Barbers",
+      "item": [
+        {
+          "name": "Create Barber (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"password\": \"BarberPass123\",\n  \"phone\": \"11122233\",\n  \"schedule\": [\n    { \"days\": \"Lunes\", \"hours\": \"09:00-17:00\" },\n    { \"days\": \"Martes\", \"hours\": \"09:00-17:00\" }\n  ]\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] }
+          }
+        },
+        {
+          "name": "Create Barber (form-data)",
+          "request": {
+            "method": "POST",
+            "body": { "mode": "formdata", "formdata": [ { "key": "name", "value": "Carlos", "type": "text" }, { "key": "email", "value": "carlos@example.com", "type": "text" }, { "key": "password", "value": "BarberPass123", "type": "text" }, { "key": "phone", "value": "11122233", "type": "text" }, { "key": "schedule", "value": "[{ \"days\": \"Lunes\", \"hours\": \"09:00-17:00\" }, { \"days\": \"Martes\", \"hours\": \"09:00-17:00\" }]", "type": "text" }, { "key": "profilePicture", "type": "file", "src": [] } ] },
+            "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] }
+          }
+        },
+        { "name": "Get Barbers", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] } } },
+        { "name": "Get Barber by ID", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+  { "name": "Update Barber (JSON)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Barber Actualizado\",\n  \"schedule\": [\n    { \"days\": \"Miercoles\", \"hours\": \"10:00-18:00\" }\n  ]\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+  { "name": "Update Barber (form-data)", "request": { "method": "PUT", "body": { "mode": "formdata", "formdata": [ { "key": "name", "value": "Barber Actualizado", "type": "text" }, { "key": "schedule", "value": "[{ \"days\": \"Miercoles\", \"hours\": \"10:00-18:00\" }]", "type": "text" }, { "key": "profilePicture", "type": "file", "src": [] } ] }, "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+        { "name": "Delete Barber", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Create Favorite (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"clientId\": \"<CLIENT_OBJECTID>\",\n  \"typeFavorite\": \"PRODUCT\",\n  \"referenceId\": \"<PRODUCT_OBJECTID>\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] }
+          }
+        },
+        {
+          "name": "Create Favorite (form-data)",
+          "request": {
+            "method": "POST",
+            "body": { "mode": "formdata", "formdata": [ { "key": "clientId", "value": "<CLIENT_OBJECTID>", "type": "text" }, { "key": "typeFavorite", "value": "PRODUCT", "type": "text" }, { "key": "referenceId", "value": "<PRODUCT_OBJECTID>", "type": "text" } ] },
+            "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] }
+          }
+        },
+        { "name": "Get Favorites", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] } } },
+        { "name": "Get Favorite by ID", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } },
+        { "name": "Update Favorite (JSON)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"referenceId\": \"<NEW_PRODUCT_OBJECTID>\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } },
+        { "name": "Delete Favorite", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "clienteId", "value": "<CLIENT_OBJECTID>", "type": "text" },
+                { "key": "barberoId", "value": "<BARBER_OBJECTID>", "type": "text" },
+                { "key": "servicioId", "value": "<SERVICE_OBJECTID>", "type": "text" },
+                { "key": "score", "value": "5", "type": "text" },
+                { "key": "comment", "value": "Excelente servicio", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "crear"]
+            }
+          }
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/obtener",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "obtener"]
+            }
+          }
+        },
+        {
+          "name": "Get Review by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/obtener/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "obtener", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "score", "value": "4", "type": "text" },
+                { "key": "comment", "value": "Muy buen corte", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/actualizar/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "actualizar", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/review/eliminar/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "eliminar", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Barber",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/barbero/:barberoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "barbero", ":barberoId"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Client",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/cliente/:clienteId",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "cliente", ":clienteId"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Service",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/servicio/:servicioId",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "servicio", ":servicioId"]
+            }
+          }
+        },
+        {
+          "name": "Get Average Score by Barber",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/promedio/:barberoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "promedio", ":barberoId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Corte Premium", "type": "text" },
+                { "key": "description", "value": "Corte de cabello profesional", "type": "text" },
+                { "key": "price", "value": "150", "type": "text" },
+                { "key": "duration", "value": "45min", "type": "text" },
+                { "key": "category", "value": "CORTE_DE_CABELLO", "type": "text" },
+                { "key": "status", "value": "activo", "type": "text" },
+                { "key": "points", "value": "10", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service",
+                "crear"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/obtener",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener"]
+            }
+          }
+        },
+        {
+          "name": "Get Service by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/obtener/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Corte Premium Plus", "type": "text" },
+                { "key": "description", "value": "Corte y peinado", "type": "text" },
+                { "key": "price", "value": "180", "type": "text" },
+                { "key": "duration", "value": "60min", "type": "text" },
+                { "key": "category", "value": "CORTE_DE_CABELLO", "type": "text" },
+                { "key": "status", "value": "activo", "type": "text" },
+                { "key": "points", "value": "15", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/actualizar/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "actualizar", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/service/eliminar/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "eliminar", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Services by Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/estado/:status",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "estado", ":status"]
+            }
+          }
+        },
+        {
+          "name": "Get Services by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/tipo/:name",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "tipo", ":name"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
