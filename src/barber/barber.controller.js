@@ -1,11 +1,15 @@
 'use strict';
 
 import Barber from './barber.model.js';
+import { cloudinary } from '../../middlewares/file-uploader.js';
 
 export const createBarber = async (req, res) => {
     try {
         // Normalizar y validar schedule si viene en body (puede ser JSON string por form-data)
         const payload = { ...req.body };
+        if (req.file) {
+            payload.profilePicture = req.file.path;
+        }
         if (payload.schedule) {
             if (typeof payload.schedule === 'string') {
                 try {
@@ -25,6 +29,15 @@ export const createBarber = async (req, res) => {
         await barber.save();
         return res.status(201).json({ success: true, data: barber });
     } catch (error) {
+        // Eliminar imagen de Cloudinary si falla el guardado
+        if (req.file && req.file.filename) {
+            try {
+                await cloudinary.uploader.destroy(req.file.filename);
+                console.log('Imagen eliminada de Cloudinary tras error en create barber:', req.file.filename);
+            } catch (destroyErr) {
+                console.error('Error al eliminar imagen:', destroyErr);
+            }
+        }
         // manejo de errores comunes (si aplica)
         if (error && error.code === 11000) {
             return res.status(409).json({ success: false, message: 'Duplicate key error' });
@@ -57,6 +70,9 @@ export const updateBarber = async (req, res) => {
     try {
         const { id } = req.params;
         const payload = { ...req.body };
+        if (req.file) {
+            payload.profilePicture = req.file.path;
+        }
         if (payload.schedule) {
             if (typeof payload.schedule === 'string') {
                 try {
@@ -75,6 +91,15 @@ export const updateBarber = async (req, res) => {
         if (!updated) return res.status(404).json({ success: false, message: 'Barber not found' });
         return res.status(200).json({ success: true, data: updated });
     } catch (error) {
+        // Eliminar imagen de Cloudinary si falla la actualización
+        if (req.file && req.file.filename) {
+            try {
+                await cloudinary.uploader.destroy(req.file.filename);
+                console.log('Imagen eliminada de Cloudinary tras error en update barber:', req.file.filename);
+            } catch (destroyErr) {
+                console.error('Error al eliminar imagen:', destroyErr);
+            }
+        }
         if (error && error.code === 11000) {
             return res.status(409).json({ success: false, message: 'Duplicate key error' });
         }
