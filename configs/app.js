@@ -19,6 +19,7 @@ import detailSaleRoutes from '../src/detailSale/detail.routes.js';
 import invoiceRoutes from '../src/invoice/invoice.routes.js';
 import statisticsRoutes from '../src/statistics/statistics.routes.js';
 import productRoutes from '../src/product/product.routes.js'
+import { cleanupUploadOnError } from '../middlewares/cleanup-upload-on-error.js'
 
 
 
@@ -64,6 +65,9 @@ const routes = (app) => {
             message: 'Endpoint not found',
         })
     })
+
+    // Error handling middleware for cleaning uploaded files on error
+    app.use(cleanupUploadOnError)
 }
 
 export const initServer = async () => {
