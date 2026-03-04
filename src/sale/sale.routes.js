@@ -22,10 +22,8 @@ router.get('/', getSales)
 
 router.get('/:id', getSaleById)
 
-// Actualizar venta
 router.put('/:id', updateSale)
 
-// Eliminar venta
 router.delete('/:id', deleteSale)
 
 export default router

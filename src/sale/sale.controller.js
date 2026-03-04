@@ -2,15 +2,10 @@
 
 import Sale from './sale.model.js'
 
-/**
- * Crear venta
- */
 export const createSale = async (req, res) => {
     try {
-        // build sale data from body
         const saleData = { ...(req.body || {}) }
 
-        // If auth middleware provided a user id, set clientId if missing
         if (!saleData.clientId && req.user && req.user.uid) {
             saleData.clientId = req.user.uid
         }
@@ -33,9 +28,6 @@ export const createSale = async (req, res) => {
     }
 }
 
-/**
- * Obtener ventas (posible uso admin)
- */
 export const getSales = async (req, res) => {
     try {
         const sales = await Sale.find().populate('clientId')
@@ -46,9 +38,6 @@ export const getSales = async (req, res) => {
     }
 }
 
-/**
- * Obtener mis ventas (cliente autenticado)
- */
 export const getMySales = async (req, res) => {
     try {
         const clientId = req.user && req.user.uid
@@ -65,9 +54,6 @@ export const getMySales = async (req, res) => {
     }
 }
 
-/**
- * Obtener venta por id
- */
 export const getSaleById = async (req, res) => {
     try {
         const { id } = req.params
@@ -82,9 +68,6 @@ export const getSaleById = async (req, res) => {
     }
 }
 
-/**
- * Actualizar venta
- */
 export const updateSale = async (req, res) => {
     try {
         const { id } = req.params
@@ -101,9 +84,6 @@ export const updateSale = async (req, res) => {
     }
 }
 
-/**
- * Eliminar venta
- */
 export const deleteSale = async (req, res) => {
     try {
         const { id } = req.params

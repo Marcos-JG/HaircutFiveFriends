@@ -1,6 +1,7 @@
 'user strict';
 
 import mongoose from 'mongoose';
+import validateDetail from '../../middlewares/validateDetail.js';
 
 const reservationSchema = new mongoose  .Schema(
     {
@@ -32,7 +33,13 @@ const reservationSchema = new mongoose  .Schema(
     }
 )
 
+reservationSchema.pre('save', validateDetail)
+
 reservationSchema.index({ detailId: 1});
 reservationSchema.index({ saleId: 1});
 reservationSchema.index({ productId: 1});
 reservationSchema.index({ saleId: 1, productId: 1, detailId: 1});
+
+const Detail = mongoose.model('Detail', reservationSchema);
+
+export default Detail;

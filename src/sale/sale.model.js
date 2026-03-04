@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 
-const reservationSchema = new mongoose  .Schema(
+const saleSchema = new mongoose  .Schema(
     {
         clientId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -49,7 +49,6 @@ const reservationSchema = new mongoose  .Schema(
     }
 )
 
-// Export the model
-const Sale = mongoose.model('Sale', reservationSchema);
+const Sale = mongoose.model('Sale', saleSchema);
 
 export default Sale;
