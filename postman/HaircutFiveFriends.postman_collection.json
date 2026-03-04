@@ -1,0 +1,159 @@
+{
+  "info": {
+    "_postman_id": "b9c0f8a4-0000-4f3b-aaaa-000000000000",
+    "name": "HaircutFiveFriends API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección con endpoints para Clients, Barbers y Favorites. Reemplaza {{baseUrl}} por tu servidor, por ejemplo http://localhost:3000/\nValor sugerido para variable baseUrl: http://localhost:3000/HaircutFiveFriends/api/v1"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/HaircutFiveFriends/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Create Client (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"u123\",\n  \"name\": \"Juan Perez\",\n  \"phone\": \"+34123456789\",\n  \"email\": \"juan@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Client (form-data)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "userId", "value": "u123", "type": "text" },
+                { "key": "name", "value": "Juan Perez", "type": "text" },
+                { "key": "phone", "value": "+34123456789", "type": "text" },
+                { "key": "email", "value": "juan@example.com", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
+          }
+        },
+        {
+          "name": "Get Clients",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] } }
+        },
+        {
+          "name": "Get Client by ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] } }
+        },
+        {
+          "name": "Update Client (JSON)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nombre Actualizado\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] }
+          }
+        },
+        {
+          "name": "Update Client (form-data)",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Nombre Actualizado", "type": "text" },
+                { "key": "phone", "value": "+34123456789", "type": "text" },
+                { "key": "email", "value": "nuevo@example.com", "type": "text" },
+                { "key": "faceshape", "value": "oval", "type": "text" },
+                { "key": "profilePicture", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/clients/:id", "host": ["{{baseUrl}}"], "path": ["clients", ":id"] } }
+        }
+      ]
+    },
+    {
+      "name": "Barbers",
+      "item": [
+        {
+          "name": "Create Barber (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": \"b123\",\n  \"name\": \"Carlos\",\n  \"phone\": \"+34111222333\",\n  \"schedule\": [\n    { \"days\": \"Lunes\", \"hours\": \"09:00-17:00\" },\n    { \"days\": \"Martes\", \"hours\": \"09:00-17:00\" }\n  ]\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] }
+          }
+        },
+        {
+          "name": "Create Barber (form-data)",
+          "request": {
+            "method": "POST",
+            "body": { "mode": "formdata", "formdata": [ { "key": "userId", "value": "b123", "type": "text" }, { "key": "name", "value": "Carlos", "type": "text" }, { "key": "phone", "value": "+34111222333", "type": "text" }, { "key": "schedule", "value": "[{ \"days\": \"Lunes\", \"hours\": \"09:00-17:00\" }, { \"days\": \"Martes\", \"hours\": \"09:00-17:00\" }]", "type": "text" } ] },
+            "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] }
+          }
+        },
+        { "name": "Get Barbers", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/barbers", "host": ["{{baseUrl}}"], "path": ["barbers"] } } },
+        { "name": "Get Barber by ID", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+  { "name": "Update Barber (JSON)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Barber Actualizado\",\n  \"schedule\": [\n    { \"days\": \"Miercoles\", \"hours\": \"10:00-18:00\" }\n  ]\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+  { "name": "Update Barber (form-data)", "request": { "method": "PUT", "body": { "mode": "formdata", "formdata": [ { "key": "name", "value": "Barber Actualizado", "type": "text" }, { "key": "schedule", "value": "[{ \"days\": \"Miercoles\", \"hours\": \"10:00-18:00\" }]", "type": "text" } ] }, "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } },
+        { "name": "Delete Barber", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/barbers/:id", "host": ["{{baseUrl}}"], "path": ["barbers", ":id"] } } }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Create Favorite (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"clientId\": \"<CLIENT_ID>\",\n  \"typeFavorite\": \"PRODUCT\",\n  \"referenceId\": \"prod-123\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] }
+          }
+        },
+        {
+          "name": "Create Favorite (form-data)",
+          "request": {
+            "method": "POST",
+            "body": { "mode": "formdata", "formdata": [ { "key": "clientId", "value": "<CLIENT_ID>", "type": "text" }, { "key": "typeFavorite", "value": "PRODUCT", "type": "text" }, { "key": "referenceId", "value": "prod-123", "type": "text" } ] },
+            "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] }
+          }
+        },
+        { "name": "Get Favorites", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/favorites", "host": ["{{baseUrl}}"], "path": ["favorites"] } } },
+        { "name": "Get Favorite by ID", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } },
+        { "name": "Update Favorite (JSON)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"referenceId\": \"prod-456\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } },
+        { "name": "Delete Favorite", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/favorites/:id", "host": ["{{baseUrl}}"], "path": ["favorites", ":id"] } } }
+      ]
+    }
+  ]
+}
