@@ -9,20 +9,20 @@ import {
     updateDetail,
     deleteDetail
 } from './detail.controller.js'
-import { uploadFieldImage } from '../../middlewares/file-uploader.js'
+import { uploadProfilePicture } from '../../middlewares/file-uploader.js'
 
 const router = Router()
 
-router.post('/create', uploadFieldImage.none(), createDetail)
+router.post('/create', uploadProfilePicture.none(), createDetail)
 
 router.get('/sale/:saleId', getDetailsBySale)
 
 router.get('/', getDetails)
 
-router.get('/:id', getDetailById)
-
 router.put('/:id', updateDetail)
 
 router.delete('/:id', deleteDetail)
+
+router.get('/:id', getDetailById)
 
 export default router

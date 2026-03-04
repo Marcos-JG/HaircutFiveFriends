@@ -13,6 +13,9 @@ import barberRoutes from '../src/barber/barber.routes.js';
 import favoritesRoutes from '../src/favorites/favorites.routes.js';
 import haircutRoutes from '../src/haircut/haircut.router.js';
 import appointmentRoutes from '../src/appointment/appointment.routes.js';
+import reviewRoutes from '../src/review/review.routes.js';
+import saleRoutes from '../src/sale/sale.routes.js';
+import detailSaleRoutes from '../src/detailSale/detail.routes.js';
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
@@ -43,6 +46,10 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/barbers`, barberRoutes);
     app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
     app.use(`${BASE_PATH}/appointments`, appointmentRoutes);
+    app.use(`${BASE_PATH}/review`, reviewRoutes);
+    app.use(`${BASE_PATH}/sales`, saleRoutes);
+    app.use(`${BASE_PATH}/detail-sales`, detailSaleRoutes);
+
     app.use((req, res) => {
         res.status(404).json({
             success: false,
