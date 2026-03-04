@@ -16,6 +16,12 @@ const saleSchema = new mongoose  .Schema(
             default: "LOCAL"
         },
 
+        detailId: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Detail",
+            required: [true, "Detail is required"]
+        }],
+
         addressSale: {
             type: String
         },
@@ -30,10 +36,15 @@ const saleSchema = new mongoose  .Schema(
             required: [true, "Total is required"]
         },
 
+        pointsMessage: {
+            type: String,
+            default: null
+        },
+
         paymentMethod: {
             type: String,
             required: [true, "Payment method is required"],
-            enum: ["TARJETA_CREDITO/DEBITO", "EFECTIVO", "DEPOSITO_MOVIL"],
+            enum: ["TARJETA", "EFECTIVO"],
             default: "EFECTIVO"
         },
 

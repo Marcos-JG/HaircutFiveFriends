@@ -1,6 +1,7 @@
 'use strict'
 
 import Detail from './detail.model.js'
+import Sale from '../sale/sale.model.js'
 
 export const createDetail = async (req, res) => {
     try {
@@ -27,7 +28,6 @@ export const createDetail = async (req, res) => {
 export const getDetails = async (req, res) => {
     try {
         const details = await Detail.find()
-            .populate('saleId')
             .populate('productId')
         return res.status(200).json({ success: true, details })
     } catch (err) {
@@ -43,9 +43,17 @@ export const getDetailsBySale = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Sale ID is required' })
         }
 
-        const details = await Detail.find({ saleId })
-            .populate('saleId')
+        const sale = await Sale.findById(saleId)
+        if (!sale || !sale.detailId || sale.detailId.length === 0) {
+            return res.status(404).json({ success: false, message: 'Sale detail not found' })
+        }
+
+        const details = await Detail.find({ _id: { $in: sale.detailId } })
             .populate('productId')
+        if (!details || details.length === 0) {
+            return res.status(404).json({ success: false, message: 'Sale detail not found' })
+        }
+
         return res.status(200).json({ success: true, details })
 
     } catch (err) {
@@ -58,7 +66,6 @@ export const getDetailById = async (req, res) => {
     try {
         const { id } = req.params
         const detail = await Detail.findById(id)
-            .populate('saleId')
             .populate('productId')
         if (!detail) {
             return res.status(404).json({ success: false, message: 'Detail not found' })

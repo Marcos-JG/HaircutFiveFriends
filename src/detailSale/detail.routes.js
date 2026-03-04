@@ -9,11 +9,11 @@ import {
     updateDetail,
     deleteDetail
 } from './detail.controller.js'
-
+import { uploadProfilePicture } from '../../middlewares/file-uploader.js'
 
 const router = Router()
 
-router.post('/create', createDetail)
+router.post('/create', uploadProfilePicture.none(), createDetail)
 
 router.get('/sale/:saleId', getDetailsBySale)
 
