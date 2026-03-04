@@ -18,7 +18,7 @@ export const dbConnection = async () => {
         });
 
         mongoose.connection.on('open', () => {
-        console.log('MongoDB | conectado a la base de datos GestorDeOpiniones');
+        console.log('MongoDB | conectado a la base de datos HaircutFiveFriends');
         });
         
         mongoose.connection.on('reconnected', () => {
