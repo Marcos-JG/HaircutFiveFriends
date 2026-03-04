@@ -2,6 +2,11 @@
 
 import Service from './service.model.js';
 
+const normalizeDuration = (value) => {
+    if (typeof value !== 'string') return value;
+    return value.trim().toLowerCase().replace(/\s+/g, ' ');
+};
+
 // Crear un nuevo servicio
 export const createService = async (req, res) => {
     try {
@@ -14,7 +19,10 @@ export const createService = async (req, res) => {
             });
         }
 
-        const service = new Service(req.body);
+        const service = new Service({
+            ...req.body,
+            duration: normalizeDuration(duration)
+        });
         await service.save();
         
         res.status(201).json({
@@ -93,7 +101,7 @@ export const updateService = async (req, res) => {
         if (name) service.name = name;
         if (description) service.description = description;
         if (price) service.price = price;
-        if (duration) service.duration = duration;
+        if (duration) service.duration = normalizeDuration(duration);
         if (category) service.category = category;
         if (status) service.status = status;
         if (points !== undefined) service.points = points;

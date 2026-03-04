@@ -20,9 +20,10 @@ const serviceSchema = mongoose.Schema(
             min: 0
         },
         duration: {
-            type: Number,
+            type: String,
             required: [true, 'La duración del servicio es obligatoria'],
-            min: 0
+            trim: true,
+            match: [/^\d+\s?min$/i, 'La duración debe tener formato como 30min o 30 min']
         },
         category: {
             type: String,
@@ -52,7 +53,14 @@ const serviceSchema = mongoose.Schema(
     },
     {
         timestamps: true,
-        versionKey: false
+        versionKey: false,
+        toJSON: { 
+            transform: function(doc, ret) {
+                ret.price = `Q${Number(doc.price).toFixed(2)}`;
+                return ret;
+            }
+        },
+        toObject: { virtuals: true }
     }
 );
 
