@@ -17,10 +17,10 @@ import {
 const router = express.Router();
 
 // Rutas principales
-router.post('/crear', uploadProfilePicture.none(), createReview);                        // POST - Crear reseña
+router.post('/crear', uploadProfilePicture.none(), createReview);         // POST - Crear reseña
 router.get('/obtener', getAllReviews);                      // GET - Obtener todas
 router.get('/obtener/:id', getReviewById);                  // GET - Obtener por ID
-router.put('/actualizar/:id', uploadProfilePicture.none(), updateReview);                // PUT - Actualizar reseña
+router.put('/actualizar/:id', uploadProfilePicture.none(), updateReview); // PUT - Actualizar reseña
 router.delete('/eliminar/:id', deleteReview);               // DELETE - Eliminar reseña
 
 // Rutas de filtrado

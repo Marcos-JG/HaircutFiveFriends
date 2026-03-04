@@ -1,9 +1,9 @@
-{
+﻿{
   "info": {
     "_postman_id": "39df9b53-4fe3-49fb-b8dc-2f5d16c15bcb",
     "name": "HaircutFiveFriends API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Colección completa de endpoints del proyecto HaircutFiveFriends - Incluye todos los endpoints de la API para gestión de clientes, barberos, servicios, citas, reseñas, ventas y más."
+    "description": "Colecci├│n completa de endpoints del proyecto HaircutFiveFriends - Incluye todos los endpoints de la API para gesti├│n de clientes, barberos, servicios, citas, rese├▒as, ventas y m├ís."
   },
   "variable": [
     {
@@ -75,7 +75,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["Health"]
             },
-            "description": "Verifica que el servidor esté funcionando correctamente"
+            "description": "Verifica que el servidor est├® funcionando correctamente"
           }
         }
       ]
@@ -89,7 +89,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Corte Premium\",\n  \"description\": \"Corte con diseño personalizado\",\n  \"price\": 80,\n  \"duration\": \"60 min\",\n  \"category\": \"CORTE_DE_CABELLO\",\n  \"points\": 20\n}",
+              "raw": "{\n  \"name\": \"Corte Premium\",\n  \"description\": \"Corte con dise├▒o personalizado\",\n  \"price\": 80,\n  \"duration\": \"60 min\",\n  \"category\": \"CORTE_DE_CABELLO\",\n  \"points\": 20\n}",
               "options": {"raw": {"language": "json"}}
             },
             "url": {
@@ -97,7 +97,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "crear"]
             },
-            "description": "Crea un nuevo servicio. Incluye nombre, descripción, precio, duración, categoría y puntos."
+            "description": "Crea un nuevo servicio. Incluye nombre, descripci├│n, precio, duraci├│n, categor├¡a y puntos."
           }
         },
         {
@@ -121,7 +121,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "obtener", "{{serviceId}}"]
             },
-            "description": "Obtiene un servicio específico por su ID"
+            "description": "Obtiene un servicio espec├¡fico por su ID"
           }
         },
         {
@@ -130,7 +130,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Corte Clásico\",\n  \"price\": 50\n}",
+              "raw": "{\n  \"name\": \"Corte Cl├ísico\",\n  \"price\": 50\n}",
               "options": {"raw": {"language": "json"}}
             },
             "url": {
@@ -174,7 +174,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "tipo", "Corte Premium"]
             },
-            "description": "Busca servicios por nombre (búsqueda parcial)"
+            "description": "Busca servicios por nombre (b├║squeda parcial)"
           }
         }
       ]
@@ -228,7 +228,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["clients", "{{clientId}}"]
             },
-            "description": "Obtiene información detallada de un cliente específico"
+            "description": "Obtiene informaci├│n detallada de un cliente espec├¡fico"
           }
         },
         {
@@ -289,7 +289,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["barbers"]
             },
-            "description": "Crea un nuevo barbero. Schedule es un array JSON con días y horarios."
+            "description": "Crea un nuevo barbero. Schedule es un array JSON con d├¡as y horarios."
           }
         },
         {
@@ -313,7 +313,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["barbers", "{{barberId}}"]
             },
-            "description": "Obtiene información detallada de un barbero específico"
+            "description": "Obtiene informaci├│n detallada de un barbero espec├¡fico"
           }
         },
         {
@@ -409,7 +409,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["favorites", "{{favoriteId}}"]
             },
-            "description": "Obtiene un favorito específico por su ID"
+            "description": "Obtiene un favorito espec├¡fico por su ID"
           }
         },
         {
@@ -455,7 +455,7 @@
               "mode": "formdata",
               "formdata": [
                 {"key": "name", "value": "Fade", "type": "text"},
-                {"key": "description", "value": "Corte fade clásico", "type": "text"},
+                {"key": "description", "value": "Corte fade cl├ísico", "type": "text"},
                 {"key": "faceTypeRecommended", "value": "OVALADO", "type": "text"},
                 {"key": "imageRef", "type": "file", "src": []}
               ]
@@ -481,7 +481,7 @@
                 {"key": "page", "value": "1"}
               ]
             },
-            "description": "Obtiene todos los cortes con paginación"
+            "description": "Obtiene todos los cortes con paginaci├│n"
           }
         },
         {
@@ -493,7 +493,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "FaceType", "OVALADO"]
             },
-            "description": "Filtra cortes recomendados para un tipo de rostro específico"
+            "description": "Filtra cortes recomendados para un tipo de rostro espec├¡fico"
           }
         },
         {
@@ -517,7 +517,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "{{haircutId}}"]
             },
-            "description": "Obtiene un corte específico por su ID"
+            "description": "Obtiene un corte espec├¡fico por su ID"
           }
         },
         {
@@ -528,7 +528,7 @@
               "mode": "formdata",
               "formdata": [
                 {"key": "name", "value": "Fade Moderno", "type": "text"},
-                {"key": "description", "value": "Descripción actualizada", "type": "text"},
+                {"key": "description", "value": "Descripci├│n actualizada", "type": "text"},
                 {"key": "imageRef", "type": "file", "src": []}
               ]
             },
@@ -600,7 +600,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "{{appointmentId}}"]
             },
-            "description": "Obtiene una cita específica por su ID"
+            "description": "Obtiene una cita espec├¡fica por su ID"
           }
         },
         {
@@ -612,7 +612,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "date", "2026-03-05"]
             },
-            "description": "Obtiene todas las citas para una fecha específica (formato: YYYY-MM-DD)"
+            "description": "Obtiene todas las citas para una fecha espec├¡fica (formato: YYYY-MM-DD)"
           }
         },
         {
@@ -624,7 +624,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "barber", "{{barberId}}"]
             },
-            "description": "Obtiene todas las citas de un barbero específico"
+            "description": "Obtiene todas las citas de un barbero espec├¡fico"
           }
         },
         {
@@ -636,7 +636,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "client", "{{clientId}}"]
             },
-            "description": "Obtiene todas las citas de un cliente específico"
+            "description": "Obtiene todas las citas de un cliente espec├¡fico"
           }
         },
         {
@@ -684,7 +684,7 @@
               "formdata": [
                 {"key": "clientId", "value": "{{clientId}}", "type": "text"},
                 {"key": "saleType", "value": "LOCAL", "type": "text"},
-                {"key": "addressSale", "value": "Dirección venta", "type": "text"},
+                {"key": "addressSale", "value": "Direcci├│n venta", "type": "text"},
                 {"key": "saleDate", "value": "2026-03-03T10:00:00.000Z", "type": "text"},
                 {"key": "total", "value": "150.50", "type": "text"},
                 {"key": "paymentMethod", "value": "EFECTIVO", "type": "text"}
@@ -719,7 +719,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "my-sales"]
             },
-            "description": "Obtiene las ventas del usuario autenticado (requiere autenticación)"
+            "description": "Obtiene las ventas del usuario autenticado (requiere autenticaci├│n)"
           }
         },
         {
@@ -731,7 +731,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "{{saleId}}"]
             },
-            "description": "Obtiene una venta específica por su ID"
+            "description": "Obtiene una venta espec├¡fica por su ID"
           }
         },
         {
@@ -812,7 +812,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "{{detailSaleId}}"]
             },
-            "description": "Obtiene un detalle de venta específico por su ID"
+            "description": "Obtiene un detalle de venta espec├¡fico por su ID"
           }
         },
         {
@@ -824,7 +824,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "sale", "{{saleId}}"]
             },
-            "description": "Obtiene todos los detalles (productos) de una venta específica"
+            "description": "Obtiene todos los detalles (productos) de una venta espec├¡fica"
           }
         },
         {
@@ -874,7 +874,7 @@
                 {"key": "barberoId", "value": "{{barberId}}", "type": "text"},
                 {"key": "servicioId", "value": "{{serviceId}}", "type": "text"},
                 {"key": "score", "value": "5", "type": "text"},
-                {"key": "comment", "value": "Excelente servicio y atención", "type": "text"}
+                {"key": "comment", "value": "Excelente servicio y atenci├│n", "type": "text"}
               ]
             },
             "url": {
@@ -882,7 +882,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "crear"]
             },
-            "description": "Crea una nueva reseña. Score debe estar entre 1 y 5."
+            "description": "Crea una nueva rese├▒a. Score debe estar entre 1 y 5."
           }
         },
         {
@@ -894,7 +894,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "obtener"]
             },
-            "description": "Obtiene todas las reseñas registradas"
+            "description": "Obtiene todas las rese├▒as registradas"
           }
         },
         {
@@ -946,7 +946,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "barbero", "{{barberId}}"]
             },
-            "description": "Obtiene todas las reseñas de un barbero específico"
+            "description": "Obtiene todas las rese├▒as de un barbero espec├¡fico"
           }
         },
         {
@@ -958,7 +958,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "cliente", "{{clientId}}"]
             },
-            "description": "Obtiene todas las reseñas realizadas por un cliente específico"
+            "description": "Obtiene todas las rese├▒as realizadas por un cliente espec├¡fico"
           }
         },
         {
@@ -970,7 +970,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "servicio", "{{serviceId}}"]
             },
-            "description": "Obtiene todas las reseñas de un servicio específico"
+            "description": "Obtiene todas las rese├▒as de un servicio espec├¡fico"
           }
         },
         {
@@ -982,7 +982,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "promedio", "{{barberId}}"]
             },
-            "description": "Obtiene el promedio de calificación de un barbero"
+            "description": "Obtiene el promedio de calificaci├│n de un barbero"
           }
         }
         
@@ -1088,7 +1088,7 @@
       }
     },
     {
-      "name": "Generar Estadísticas PDF",
+      "name": "Generar Estad├¡sticas PDF",
       "request": {
         "method": "GET",
         "url": {

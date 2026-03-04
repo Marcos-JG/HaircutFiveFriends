@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import multer from 'multer';
 import { 
     createService, 
     updateService,
@@ -12,12 +13,13 @@ import {
 } from './service.controller.js';
 
 const router = express.Router();
+const parseFormData = multer().none();
 
 // Rutas principales
-router.post('/crear', createService);                    // POST - Crear servicio
+router.post('/crear', parseFormData, createService);    // POST - Crear servicio
 router.get('/obtener', getAllServices);                 // GET - Obtener todos
 router.get('/obtener/:id', getServiceById);             // GET - Obtener por ID
-router.put('/actualizar/:id', updateService);           // PUT - Actualizar servicio
+router.put('/actualizar/:id', parseFormData, updateService); // PUT - Actualizar servicio
 router.delete('/eliminar/:id', deleteService);          // DELETE - Eliminar servicio
 
 // Rutas de filtrado

@@ -47,6 +47,7 @@ const routes = (app) => {
     })
     
     app.use(`${BASE_PATH}/service`, serviceRoutes);
+    app.use(`${BASE_PATH}/review`, reviewRoutes);
     app.use(`${BASE_PATH}/clients`, clientRoutes);
     app.use(`${BASE_PATH}/barbers`, barberRoutes);
     app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
