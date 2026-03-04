@@ -5,16 +5,15 @@ import validateDetail from '../../middlewares/validateDetail.js';
 
 const detailSchema = new mongoose  .Schema(
     {
-        saleId: {
+        referenceId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Sale",
-            required: [true, "Sale is required"]
+            required: [true, "Reference is required"]
         },
 
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: [true, "Product is required"]
+        detailType: {
+            type: String,
+            enum: ['SERVICE', 'PRODUCT'],
+            required: [true, "Detail type is required"]
         },
 
         quantity: {
@@ -23,8 +22,7 @@ const detailSchema = new mongoose  .Schema(
         },
 
         total: {
-            type: Number,
-            required: [true, "Total is required"]
+            type: Number
         }
     },
     {
@@ -35,10 +33,7 @@ const detailSchema = new mongoose  .Schema(
 
 detailSchema.pre('save', validateDetail)
 
-detailSchema.index({ detailId: 1});
-detailSchema.index({ saleId: 1});
-detailSchema.index({ productId: 1});
-detailSchema.index({ saleId: 1, productId: 1, detailId: 1});
+detailSchema.index({ referenceId: 1});
 
 const Detail = mongoose.model('Detail', detailSchema);
 

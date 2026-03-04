@@ -43,12 +43,6 @@ const serviceSchema = mongoose.Schema(
             required: [true, 'El estado del servicio es obligatorio'],
             enum: ['activo', 'inactivo'],
             default: 'activo'
-        },
-        points: {
-            type: Number,
-            required: [true, 'Los puntos del servicio son obligatorios'],
-            min: 0,
-            default: 0
         }
     },
     {
