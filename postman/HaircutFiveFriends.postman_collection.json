@@ -1,0 +1,991 @@
+{
+  "info": {
+    "_postman_id": "39df9b53-4fe3-49fb-b8dc-2f5d16c15bcb",
+    "name": "HaircutFiveFriends API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección completa de endpoints del proyecto HaircutFiveFriends - Incluye todos los endpoints de la API para gestión de clientes, barberos, servicios, citas, reseñas, ventas y más."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3006/HaircutFiveFriends/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "clientId",
+      "value": "REEMPLAZAR_CLIENT_ID",
+      "type": "string"
+    },
+    {
+      "key": "barberId",
+      "value": "REEMPLAZAR_BARBER_ID",
+      "type": "string"
+    },
+    {
+      "key": "serviceId",
+      "value": "REEMPLAZAR_SERVICE_ID",
+      "type": "string"
+    },
+    {
+      "key": "favoriteId",
+      "value": "REEMPLAZAR_FAVORITE_ID",
+      "type": "string"
+    },
+    {
+      "key": "haircutId",
+      "value": "REEMPLAZAR_HAIRCUT_ID",
+      "type": "string"
+    },
+    {
+      "key": "appointmentId",
+      "value": "REEMPLAZAR_APPOINTMENT_ID",
+      "type": "string"
+    },
+    {
+      "key": "saleId",
+      "value": "REEMPLAZAR_SALE_ID",
+      "type": "string"
+    },
+    {
+      "key": "detailSaleId",
+      "value": "REEMPLAZAR_DETAIL_SALE_ID",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "REEMPLAZAR_PRODUCT_ID",
+      "type": "string"
+    },
+    {
+      "key": "reviewId",
+      "value": "REEMPLAZAR_REVIEW_ID",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/Health",
+              "host": ["{{baseUrl}}"],
+              "path": ["Health"]
+            },
+            "description": "Verifica que el servidor esté funcionando correctamente"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service",
+      "item": [
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corte Premium\",\n  \"description\": \"Corte con diseño personalizado\",\n  \"price\": 80,\n  \"duration\": \"60 min\",\n  \"category\": \"CORTE_DE_CABELLO\",\n  \"points\": 20\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "crear"]
+            },
+            "description": "Crea un nuevo servicio. Incluye nombre, descripción, precio, duración, categoría y puntos."
+          }
+        },
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/obtener",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener"]
+            },
+            "description": "Obtiene todos los servicios registrados en el sistema"
+          }
+        },
+        {
+          "name": "Get Service By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/obtener/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener", "{{serviceId}}"]
+            },
+            "description": "Obtiene un servicio específico por su ID"
+          }
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corte Clásico\",\n  \"price\": 50\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/actualizar/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "actualizar", "{{serviceId}}"]
+            },
+            "description": "Actualiza un servicio existente. Los campos son opcionales."
+          }
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/service/eliminar/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "eliminar", "{{serviceId}}"]
+            },
+            "description": "Elimina un servicio del sistema (soft delete)"
+          }
+        },
+        {
+          "name": "Get Services By Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/estado/activo",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "estado", "activo"]
+            },
+            "description": "Filtra servicios por estado (activo/inactivo)"
+          }
+        },
+        {
+          "name": "Get Services By Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/tipo/Corte Premium",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "tipo", "Corte Premium"]
+            },
+            "description": "Busca servicios por nombre (búsqueda parcial)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "userId", "value": "u123", "type": "text"},
+                {"key": "name", "value": "Juan Perez", "type": "text"},
+                {"key": "phone", "value": "+50200000000", "type": "text"},
+                {"key": "email", "value": "juan@example.com", "type": "text"},
+                {"key": "password", "value": "SecurePass123", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": []},
+                {"key": "faceshape", "value": "OVALADO", "type": "text"},
+                {"key": "points", "value": "0", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clients",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"]
+            },
+            "description": "Crea un nuevo cliente. Incluye foto de perfil opcional. Faceshape valores: OVALADO, CUADRADO, REDONDO, CORAZON, DIAMANTE"
+          }
+        },
+        {
+          "name": "Get Clients",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/clients",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"]
+            },
+            "description": "Obtiene todos los clientes registrados"
+          }
+        },
+        {
+          "name": "Get Client By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "Obtiene información detallada de un cliente específico"
+          }
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Juan Actualizado", "type": "text"},
+                {"key": "phone", "value": "+50211111111", "type": "text"},
+                {"key": "faceshape", "value": "CUADRADO", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "Actualiza datos de un cliente existente. Todos los campos son opcionales."
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "Elimina un cliente del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Barbers",
+      "item": [
+        {
+          "name": "Create Barber",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "userId", "value": "b123", "type": "text"},
+                {"key": "name", "value": "Carlos", "type": "text"},
+                {"key": "email", "value": "carlos@example.com", "type": "text"},
+                {"key": "password", "value": "SecurePass123", "type": "text"},
+                {"key": "phone", "value": "+50222222222", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": []},
+                {"key": "schedule", "value": "[{\"days\":\"Lunes\",\"hours\":\"09:00-17:00\"}]", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/barbers",
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers"]
+            },
+            "description": "Crea un nuevo barbero. Schedule es un array JSON con días y horarios."
+          }
+        },
+        {
+          "name": "Get Barbers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/barbers",
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers"]
+            },
+            "description": "Obtiene todos los barberos registrados"
+          }
+        },
+        {
+          "name": "Get Barber By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/barbers/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
+            },
+            "description": "Obtiene información detallada de un barbero específico"
+          }
+        },
+        {
+          "name": "Update Barber",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Carlos Actualizado", "type": "text"},
+                {"key": "schedule", "value": "[{\"days\":\"Martes\",\"hours\":\"10:00-18:00\"}]", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/barbers/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
+            },
+            "description": "Actualiza datos de un barbero existente. Todos los campos son opcionales."
+          }
+        },
+        {
+          "name": "Delete Barber",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/barbers/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
+            },
+            "description": "Elimina un barbero del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Create Favorite",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clientId", "value": "{{clientId}}", "type": "text"},
+                {"key": "typeFavorite", "value": "PRODUCT", "type": "text"},
+                {"key": "referenceId", "value": "prod-123", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"]
+            },
+            "description": "Crea un favorito para un cliente. typeFavorite puede ser: PRODUCT, SERVICE, BARBER, HAIRCUT"
+          }
+        },
+        {
+          "name": "Get Favorites",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"]
+            },
+            "description": "Obtiene todos los favoritos"
+          }
+        },
+        {
+          "name": "Get Favorites (Filtered)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/favorites?clientId={{clientId}}&typeFavorite=PRODUCT",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"],
+              "query": [
+                {"key": "clientId", "value": "{{clientId}}"},
+                {"key": "typeFavorite", "value": "PRODUCT"}
+              ]
+            },
+            "description": "Filtra favoritos por clientId y/o typeFavorite"
+          }
+        },
+        {
+          "name": "Get Favorite By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
+            },
+            "description": "Obtiene un favorito específico por su ID"
+          }
+        },
+        {
+          "name": "Update Favorite",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "referenceId", "value": "prod-456", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
+            },
+            "description": "Actualiza un favorito existente"
+          }
+        },
+        {
+          "name": "Delete Favorite",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
+            },
+            "description": "Elimina un favorito del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Haircuts",
+      "item": [
+        {
+          "name": "Create Haircut",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Fade", "type": "text"},
+                {"key": "description", "value": "Corte fade clásico", "type": "text"},
+                {"key": "faceTypeRecommended", "value": "OVALADO", "type": "text"},
+                {"key": "imageRef", "type": "file", "src": []}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "create"]
+            },
+            "description": "Crea un nuevo tipo de corte con imagen de referencia"
+          }
+        },
+        {
+          "name": "Get Haircuts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/haircuts?limit=10&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts"],
+              "query": [
+                {"key": "limit", "value": "10"},
+                {"key": "page", "value": "1"}
+              ]
+            },
+            "description": "Obtiene todos los cortes con paginación"
+          }
+        },
+        {
+          "name": "Get Haircut By FaceType",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/FaceType/OVALADO",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "FaceType", "OVALADO"]
+            },
+            "description": "Filtra cortes recomendados para un tipo de rostro específico"
+          }
+        },
+        {
+          "name": "Get Haircut By Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/Name/Fade",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "Name", "Fade"]
+            },
+            "description": "Busca cortes por nombre"
+          }
+        },
+        {
+          "name": "Get Haircut By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
+            },
+            "description": "Obtiene un corte específico por su ID"
+          }
+        },
+        {
+          "name": "Update Haircut",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Fade Moderno", "type": "text"},
+                {"key": "description", "value": "Descripción actualizada", "type": "text"},
+                {"key": "imageRef", "type": "file", "src": []}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
+            },
+            "description": "Actualiza un corte existente. Campos opcionales."
+          }
+        },
+        {
+          "name": "Delete Haircut",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
+            },
+            "description": "Elimina un corte del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "barberId", "value": "{{barberId}}", "type": "text"},
+                {"key": "serviceId", "value": "{{serviceId}}", "type": "text"},
+                {"key": "appointmentDate", "value": "2026-03-05T15:00:00.000Z", "type": "text"},
+                {"key": "status", "value": "PENDIENTE", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "create"]
+            },
+            "description": "Crea una nueva cita. Status puede ser: PENDIENTE, CONFIRMADA, COMPLETADA, CANCELADA"
+          }
+        },
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"]
+            },
+            "description": "Obtiene todas las citas registradas"
+          }
+        },
+        {
+          "name": "Get Appointment By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
+            },
+            "description": "Obtiene una cita específica por su ID"
+          }
+        },
+        {
+          "name": "Get Appointments By Date",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/date/2026-03-05",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "date", "2026-03-05"]
+            },
+            "description": "Obtiene todas las citas para una fecha específica (formato: YYYY-MM-DD)"
+          }
+        },
+        {
+          "name": "Get Appointments By Barber",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/barber/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "barber", "{{barberId}}"]
+            },
+            "description": "Obtiene todas las citas de un barbero específico"
+          }
+        },
+        {
+          "name": "Get Appointments By Client",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/client/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "client", "{{clientId}}"]
+            },
+            "description": "Obtiene todas las citas de un cliente específico"
+          }
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "appointmentDate", "value": "2026-03-05T16:00:00.000Z", "type": "text"},
+                {"key": "status", "value": "PENDIENTE", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
+            },
+            "description": "Actualiza una cita existente. Campos opcionales."
+          }
+        },
+        {
+          "name": "Cancel Appointment (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
+            },
+            "description": "Cancela una cita (soft delete - cambia el status a CANCELADA)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clientId", "value": "{{clientId}}", "type": "text"},
+                {"key": "saleType", "value": "LOCAL", "type": "text"},
+                {"key": "addressSale", "value": "Dirección venta", "type": "text"},
+                {"key": "saleDate", "value": "2026-03-03T10:00:00.000Z", "type": "text"},
+                {"key": "total", "value": "150.50", "type": "text"},
+                {"key": "paymentMethod", "value": "EFECTIVO", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "create"]
+            },
+            "description": "Crea una nueva venta. saleType: LOCAL o DOMICILIO (requiere addressSale). paymentMethod: EFECTIVO, TARJETA, TRANSFERENCIA"
+          }
+        },
+        {
+          "name": "Get All Sales",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales"]
+            },
+            "description": "Obtiene todas las ventas registradas"
+          }
+        },
+        {
+          "name": "Get My Sales",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales/my-sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "my-sales"]
+            },
+            "description": "Obtiene las ventas del usuario autenticado (requiere autenticación)"
+          }
+        },
+        {
+          "name": "Get Sale By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            },
+            "description": "Obtiene una venta específica por su ID"
+          }
+        },
+        {
+          "name": "Update Sale",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "total", "value": "200.00", "type": "text"},
+                {"key": "status", "value": "COMPLETADO", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            },
+            "description": "Actualiza una venta existente. Campos opcionales."
+          }
+        },
+        {
+          "name": "Delete Sale",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            },
+            "description": "Elimina una venta del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "DetailSales",
+      "item": [
+        {
+          "name": "Create DetailSale",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "saleId", "value": "{{saleId}}", "type": "text"},
+                {"key": "productId", "value": "{{productId}}", "type": "text"},
+                {"key": "quantity", "value": "2", "type": "text"},
+                {"key": "total", "value": "50.00", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "create"]
+            },
+            "description": "Crea un detalle de venta (producto vendido en una venta)"
+          }
+        },
+        {
+          "name": "Get All DetailSales",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales"]
+            },
+            "description": "Obtiene todos los detalles de ventas"
+          }
+        },
+        {
+          "name": "Get DetailSale By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/{{detailSaleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "{{detailSaleId}}"]
+            },
+            "description": "Obtiene un detalle de venta específico por su ID"
+          }
+        },
+        {
+          "name": "Get DetailSales By Sale",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/sale/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "sale", "{{saleId}}"]
+            },
+            "description": "Obtiene todos los detalles (productos) de una venta específica"
+          }
+        },
+        {
+          "name": "Update DetailSale",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "quantity", "value": "3", "type": "text"},
+                {"key": "total", "value": "75.00", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/{{detailSaleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "{{detailSaleId}}"]
+            },
+            "description": "Actualiza un detalle de venta existente. Campos opcionales."
+          }
+        },
+        {
+          "name": "Delete DetailSale",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/{{detailSaleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "{{detailSaleId}}"]
+            },
+            "description": "Elimina un detalle de venta del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "barberoId", "value": "{{barberId}}", "type": "text"},
+                {"key": "servicioId", "value": "{{serviceId}}", "type": "text"},
+                {"key": "score", "value": "5", "type": "text"},
+                {"key": "comment", "value": "Excelente servicio y atención", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "crear"]
+            },
+            "description": "Crea una nueva reseña. Score debe estar entre 1 y 5."
+          }
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/obtener",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "obtener"]
+            },
+            "description": "Obtiene todas las reseñas registradas"
+          }
+        },
+        {
+          "name": "Get Review By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/obtener/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "obtener", "{{reviewId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "score", "value": "4", "type": "text"},
+                {"key": "comment", "value": "Buen servicio, mejorar algunos detalles", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/actualizar/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "actualizar", "{{reviewId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/review/eliminar/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "eliminar", "{{reviewId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews By Barbero",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/barbero/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "barbero", "{{barberId}}"]
+            },
+            "description": "Obtiene todas las reseñas de un barbero específico"
+          }
+        },
+        {
+          "name": "Get Reviews By Cliente",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/cliente/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "cliente", "{{clientId}}"]
+            },
+            "description": "Obtiene todas las reseñas realizadas por un cliente específico"
+          }
+        },
+        {
+          "name": "Get Reviews By Servicio",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/servicio/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "servicio", "{{serviceId}}"]
+            },
+            "description": "Obtiene todas las reseñas de un servicio específico"
+          }
+        },
+        {
+          "name": "Get Average Score By Barbero",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/review/promedio/{{barberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "promedio", "{{barberId}}"]
+            },
+            "description": "Obtiene el promedio de calificación de un barbero"
+          }
+        }
+      ]
+    }
+  ]
+}
