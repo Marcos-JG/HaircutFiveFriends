@@ -14,7 +14,7 @@ const favoritesSchema = new mongoose.Schema({
         enum: ["PRODUCT", "SERVICE", "HAIRCUT", "BARBER"]
     },
     referenceId:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: [true, "Reference ID is required"]
     }
 }, {

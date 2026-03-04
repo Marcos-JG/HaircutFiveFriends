@@ -1,6 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const barberSchema = new mongoose.Schema(
     {
@@ -11,6 +12,17 @@ const barberSchema = new mongoose.Schema(
         name: {
             type: String,
             required: [true, "Name is required"]
+        },
+
+        email: {
+            type: String,
+            required: [true, "Email is required"],
+            unique: true
+        },
+
+        password: {
+            type: String,
+            required: [true, "Contraseña is required"]
         },
 
         phone: {
@@ -45,8 +57,13 @@ const barberSchema = new mongoose.Schema(
         versionKey: false
     })
 
-// Removed email unique index: barber schema does not define `email` and
-// a unique index on a non-existent field causes duplicate-key errors
-// for documents that lack that field. If you want a uniqueness constraint
-// use a real field (e.g. `userId`) and create an index on it instead.
+barberSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+barberSchema.index({ userId: 1 });
+barberSchema.index({ email: 1 }, { unique: true });
 export default mongoose.model("Barber", barberSchema);

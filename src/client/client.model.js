@@ -1,6 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const clientSchema = new mongoose.Schema(
     {
@@ -22,6 +23,11 @@ const clientSchema = new mongoose.Schema(
             type: String,
             required: [true, "Email is required"],
             unique: true
+        },
+
+         password:{
+            type: String,
+            required: [true, "Contraseña is required"]
         },
 
         profilePicture:{
@@ -48,6 +54,13 @@ const clientSchema = new mongoose.Schema(
         versionKey: false
     }
 )
+
+clientSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
 
 clientSchema.index({ userId: 1});
 clientSchema.index({ email: 1 }, { unique: true });

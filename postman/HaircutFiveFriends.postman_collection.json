@@ -3,7 +3,7 @@
     "_postman_id": "39df9b53-4fe3-49fb-b8dc-2f5d16c15bcb",
     "name": "HaircutFiveFriends API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Colección completa de endpoints actuales del proyecto (Health, Service, Clients, Barbers, Favorites, Haircuts, Appointments)."
+    "description": "Colección completa de endpoints del proyecto HaircutFiveFriends"
   },
   "variable": [
     {
@@ -52,12 +52,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/Health",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "Health"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["Health"]
             }
           }
         }
@@ -73,52 +69,19 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Corte Premium",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Corte con diseño personalizado",
-                  "type": "text"
-                },
-                {
-                  "key": "price",
-                  "value": "80",
-                  "type": "text"
-                },
-                {
-                  "key": "duration",
-                  "value": "60",
-                  "type": "text"
-                },
-                {
-                  "key": "category",
-                  "value": "CORTE_DE_CABELLO",
-                  "type": "text"
-                },
-                {
-                  "key": "status",
-                  "value": "activo",
-                  "type": "text"
-                },
-                {
-                  "key": "points",
-                  "value": "20",
-                  "type": "text"
-                }
+                {"key": "name", "value": "Corte Premium", "type": "text"},
+                {"key": "description", "value": "Corte con diseño personalizado", "type": "text"},
+                {"key": "price", "value": "80", "type": "text"},
+                {"key": "duration", "value": "60", "type": "text"},
+                {"key": "category", "value": "CORTE_DE_CABELLO", "type": "text"},
+                {"key": "status", "value": "activo", "type": "text"},
+                {"key": "points", "value": "20", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/service/crear",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "crear"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "crear"]
             }
           }
         },
@@ -128,13 +91,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/service/obtener",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "obtener"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener"]
             }
           }
         },
@@ -144,14 +102,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/service/obtener/{{serviceId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "obtener",
-                "{{serviceId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "obtener", "{{serviceId}}"]
             }
           }
         },
@@ -162,28 +114,14 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Corte Clásico",
-                  "type": "text"
-                },
-                {
-                  "key": "price",
-                  "value": "50",
-                  "type": "text"
-                }
+                {"key": "name", "value": "Corte Clásico", "type": "text"},
+                {"key": "price", "value": "50", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/service/actualizar/{{serviceId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "actualizar",
-                "{{serviceId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "actualizar", "{{serviceId}}"]
             }
           }
         },
@@ -193,14 +131,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/service/eliminar/{{serviceId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "eliminar",
-                "{{serviceId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "eliminar", "{{serviceId}}"]
             }
           }
         },
@@ -210,14 +142,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/service/estado/activo",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "estado",
-                "activo"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "estado", "activo"]
             }
           }
         },
@@ -227,14 +153,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/service/tipo/Corte Premium",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "service",
-                "tipo",
-                "Corte Premium"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "tipo", "Corte Premium"]
             }
           }
         }
@@ -250,41 +170,20 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "userId",
-                  "value": "u123",
-                  "type": "text"
-                },
-                {
-                  "key": "name",
-                  "value": "Juan Perez",
-                  "type": "text"
-                },
-                {
-                  "key": "phone",
-                  "value": "+50200000000",
-                  "type": "text"
-                },
-                {
-                  "key": "email",
-                  "value": "juan@example.com",
-                  "type": "text"
-                },
-                {
-                  "key": "faceshape",
-                  "value": "OVALADO",
-                  "type": "text"
-                }
+                {"key": "userId", "value": "u123", "type": "text"},
+                {"key": "name", "value": "Juan Perez", "type": "text"},
+                {"key": "phone", "value": "+50200000000", "type": "text"},
+                {"key": "email", "value": "juan@example.com", "type": "text"},
+                {"key": "password", "value": "SecurePass123", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": []},
+                {"key": "faceshape", "value": "OVALADO", "type": "text"},
+                {"key": "points", "value": "0", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/clients",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "clients"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"]
             }
           }
         },
@@ -294,12 +193,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/clients",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "clients"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"]
             }
           }
         },
@@ -309,13 +204,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "clients",
-                "{{clientId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
             }
           }
         },
@@ -326,32 +216,15 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Juan Actualizado",
-                  "type": "text"
-                },
-                {
-                  "key": "phone",
-                  "value": "+50211111111",
-                  "type": "text"
-                },
-                {
-                  "key": "faceshape",
-                  "value": "CUADRADO",
-                  "type": "text"
-                }
+                {"key": "name", "value": "Juan Actualizado", "type": "text"},
+                {"key": "phone", "value": "+50211111111", "type": "text"},
+                {"key": "faceshape", "value": "CUADRADO", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "clients",
-                "{{clientId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
             }
           }
         },
@@ -361,13 +234,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "clients",
-                "{{clientId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
             }
           }
         }
@@ -383,36 +251,19 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "userId",
-                  "value": "b123",
-                  "type": "text"
-                },
-                {
-                  "key": "name",
-                  "value": "Carlos",
-                  "type": "text"
-                },
-                {
-                  "key": "phone",
-                  "value": "+50222222222",
-                  "type": "text"
-                },
-                {
-                  "key": "schedule",
-                  "value": "[{\"days\":\"Lunes\",\"hours\":\"09:00-17:00\"}]",
-                  "type": "text"
-                }
+                {"key": "userId", "value": "b123", "type": "text"},
+                {"key": "name", "value": "Carlos", "type": "text"},
+                {"key": "email", "value": "carlos@example.com", "type": "text"},
+                {"key": "password", "value": "SecurePass123", "type": "text"},
+                {"key": "phone", "value": "+50222222222", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": []},
+                {"key": "schedule", "value": "[{\"days\":\"Lunes\",\"hours\":\"09:00-17:00\"}]", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/barbers",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "barbers"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers"]
             }
           }
         },
@@ -422,12 +273,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/barbers",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "barbers"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers"]
             }
           }
         },
@@ -437,13 +284,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/barbers/{{barberId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "barbers",
-                "{{barberId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
             }
           }
         },
@@ -454,27 +296,14 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Carlos Actualizado",
-                  "type": "text"
-                },
-                {
-                  "key": "schedule",
-                  "value": "[{\"days\":\"Martes\",\"hours\":\"10:00-18:00\"}]",
-                  "type": "text"
-                }
+                {"key": "name", "value": "Carlos Actualizado", "type": "text"},
+                {"key": "schedule", "value": "[{\"days\":\"Martes\",\"hours\":\"10:00-18:00\"}]", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/barbers/{{barberId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "barbers",
-                "{{barberId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
             }
           }
         },
@@ -484,13 +313,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/barbers/{{barberId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "barbers",
-                "{{barberId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["barbers", "{{barberId}}"]
             }
           }
         }
@@ -506,31 +330,15 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "clientId",
-                  "value": "{{clientId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "typeFavorite",
-                  "value": "PRODUCT",
-                  "type": "text"
-                },
-                {
-                  "key": "referenceId",
-                  "value": "prod-123",
-                  "type": "text"
-                }
+                {"key": "clientId", "value": "{{clientId}}", "type": "text"},
+                {"key": "typeFavorite", "value": "PRODUCT", "type": "text"},
+                {"key": "referenceId", "value": "prod-123", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/favorites",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"]
             }
           }
         },
@@ -540,12 +348,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/favorites",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"]
             }
           }
         },
@@ -555,21 +359,11 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/favorites?clientId={{clientId}}&typeFavorite=PRODUCT",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites"],
               "query": [
-                {
-                  "key": "clientId",
-                  "value": "{{clientId}}"
-                },
-                {
-                  "key": "typeFavorite",
-                  "value": "PRODUCT"
-                }
+                {"key": "clientId", "value": "{{clientId}}"},
+                {"key": "typeFavorite", "value": "PRODUCT"}
               ]
             }
           }
@@ -580,13 +374,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites",
-                "{{favoriteId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
             }
           }
         },
@@ -597,22 +386,13 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "referenceId",
-                  "value": "prod-456",
-                  "type": "text"
-                }
+                {"key": "referenceId", "value": "prod-456", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites",
-                "{{favoriteId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
             }
           }
         },
@@ -622,13 +402,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/favorites/{{favoriteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "favorites",
-                "{{favoriteId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["favorites", "{{favoriteId}}"]
             }
           }
         }
@@ -638,43 +413,22 @@
       "name": "Haircuts",
       "item": [
         {
-          "name": "Create Haircut (form-data)",
+          "name": "Create Haircut",
           "request": {
             "method": "POST",
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Fade",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Corte fade clásico",
-                  "type": "text"
-                },
-                {
-                  "key": "faceTypeRecommended",
-                  "value": "OVALADO",
-                  "type": "text"
-                },
-                {
-                  "key": "imageRef",
-                  "type": "file",
-                  "src": []
-                }
+                {"key": "name", "value": "Fade", "type": "text"},
+                {"key": "description", "value": "Corte fade clásico", "type": "text"},
+                {"key": "faceTypeRecommended", "value": "OVALADO", "type": "text"},
+                {"key": "imageRef", "type": "file", "src": []}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/haircuts/create",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "create"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "create"]
             }
           }
         },
@@ -684,21 +438,11 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/haircuts?limit=10&page=1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts"],
               "query": [
-                {
-                  "key": "limit",
-                  "value": "10"
-                },
-                {
-                  "key": "page",
-                  "value": "1"
-                }
+                {"key": "limit", "value": "10"},
+                {"key": "page", "value": "1"}
               ]
             }
           }
@@ -709,14 +453,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/haircuts/FaceType/OVALADO",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "FaceType",
-                "OVALADO"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "FaceType", "OVALADO"]
             }
           }
         },
@@ -726,14 +464,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/haircuts/Name/Fade",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "Name",
-                "Fade"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "Name", "Fade"]
             }
           }
         },
@@ -743,49 +475,27 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "{{haircutId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
             }
           }
         },
         {
-          "name": "Update Haircut (form-data)",
+          "name": "Update Haircut",
           "request": {
             "method": "PUT",
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "name",
-                  "value": "Fade Moderno",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Descripción actualizada",
-                  "type": "text"
-                },
-                {
-                  "key": "imageRef",
-                  "type": "file",
-                  "src": []
-                }
+                {"key": "name", "value": "Fade Moderno", "type": "text"},
+                {"key": "description", "value": "Descripción actualizada", "type": "text"},
+                {"key": "imageRef", "type": "file", "src": []}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "{{haircutId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
             }
           }
         },
@@ -795,13 +505,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/haircuts/{{haircutId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "haircuts",
-                "{{haircutId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["haircuts", "{{haircutId}}"]
             }
           }
         }
@@ -817,42 +522,17 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "clienteId",
-                  "value": "{{clientId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "barberId",
-                  "value": "{{barberId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "serviceId",
-                  "value": "{{serviceId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "appointmentDate",
-                  "value": "2026-03-05T15:00:00.000Z",
-                  "type": "text"
-                },
-                {
-                  "key": "status",
-                  "value": "PENDIENTE",
-                  "type": "text"
-                }
+                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "barberId", "value": "{{barberId}}", "type": "text"},
+                {"key": "serviceId", "value": "{{serviceId}}", "type": "text"},
+                {"key": "appointmentDate", "value": "2026-03-05T15:00:00.000Z", "type": "text"},
+                {"key": "status", "value": "PENDIENTE", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/appointments/create",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "create"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "create"]
             }
           }
         },
@@ -862,12 +542,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/appointments",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"]
             }
           }
         },
@@ -877,13 +553,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "{{appointmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
             }
           }
         },
@@ -893,14 +564,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/appointments/date/2026-03-05",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "date",
-                "2026-03-05"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "date", "2026-03-05"]
             }
           }
         },
@@ -910,14 +575,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/appointments/barber/{{barberId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "barber",
-                "{{barberId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "barber", "{{barberId}}"]
             }
           }
         },
@@ -927,14 +586,8 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/appointments/client/{{clientId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "client",
-                "{{clientId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "client", "{{clientId}}"]
             }
           }
         },
@@ -945,27 +598,14 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "appointmentDate",
-                  "value": "2026-03-05T16:00:00.000Z",
-                  "type": "text"
-                },
-                {
-                  "key": "status",
-                  "value": "PENDIENTE",
-                  "type": "text"
-                }
+                {"key": "appointmentDate", "value": "2026-03-05T16:00:00.000Z", "type": "text"},
+                {"key": "status", "value": "PENDIENTE", "type": "text"}
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "{{appointmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
             }
           }
         },
@@ -975,13 +615,8 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/appointments/{{appointmentId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "appointments",
-                "{{appointmentId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}"]
             }
           }
         }
