@@ -1,8 +1,8 @@
-import express from 'express';
-import { downloadInvoice } from './invoice.controller.js';
+import express from 'express'
+import { downloadInvoice } from './invoice.controller.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/:id/pdf', downloadInvoice);
+router.get('/pdf/:saleId', downloadInvoice)
 
-export default router;
+export default router

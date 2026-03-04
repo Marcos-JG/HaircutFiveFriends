@@ -26,4 +26,5 @@ router.delete('/:id', deleteSale)
 
 router.get('/:id', getSaleById)
 
+
 export default router
