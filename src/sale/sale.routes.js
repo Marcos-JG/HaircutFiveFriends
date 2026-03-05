@@ -3,6 +3,7 @@
 import { Router } from 'express'
 import {
     createSale,
+    addDetailsToSale,
     getMySales,
     getSales,
     getSaleById,
@@ -21,6 +22,8 @@ router.get('/my-sales', getMySales)
 router.get('/', getSales)
 
 router.put('/:id', uploadProfilePicture.none(), updateSale)
+
+router.put('/:id/details', uploadProfilePicture.none(), addDetailsToSale)
 
 router.delete('/:id', deleteSale)
 

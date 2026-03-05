@@ -52,6 +52,16 @@
       "type": "string"
     },
     {
+      "key": "detailProductId",
+      "value": "REEMPLAZAR_DETAIL_PRODUCT_ID",
+      "type": "string"
+    },
+    {
+      "key": "detailServiceId",
+      "value": "REEMPLAZAR_DETAIL_SERVICE_ID",
+      "type": "string"
+    },
+    {
       "key": "productId",
       "value": "REEMPLAZAR_PRODUCT_ID",
       "type": "string"
@@ -680,22 +690,16 @@
           "request": {
             "method": "POST",
             "body": {
-              "mode": "formdata",
-              "formdata": [
-                {"key": "clientId", "value": "{{clientId}}", "type": "text"},
-                {"key": "saleType", "value": "LOCAL", "type": "text"},
-                {"key": "addressSale", "value": "Dirección venta", "type": "text"},
-                {"key": "saleDate", "value": "2026-03-03T10:00:00.000Z", "type": "text"},
-                {"key": "total", "value": "150.50", "type": "text"},
-                {"key": "paymentMethod", "value": "EFECTIVO", "type": "text"}
-              ]
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"{{clientId}}\",\n  \"saleType\": \"LOCAL\",\n  \"addressSale\": \"Dirección venta\",\n  \"saleDate\": \"2026-03-03T10:00:00.000Z\",\n  \"total\": 0,\n  \"paymentMethod\": \"EFECTIVO\"\n}",
+              "options": {"raw": {"language": "json"}}
             },
             "url": {
               "raw": "{{baseUrl}}/sales/create",
               "host": ["{{baseUrl}}"],
               "path": ["sales", "create"]
             },
-            "description": "Crea una nueva venta. saleType: LOCAL o DOMICILIO (requiere addressSale). paymentMethod: EFECTIVO, TARJETA, TRANSFERENCIA"
+            "description": "Crea una nueva venta base. Recomendado iniciar con total=0 y luego vincular detailId para evitar desfaces. paymentMethod: EFECTIVO o TARJETA."
           }
         },
         {
@@ -754,6 +758,29 @@
           }
         },
         {
+          "name": "Attach Detail IDs To Sale (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"detailId\": [\n    \"{{detailProductId}}\",\n    \"{{detailServiceId}}\"\n  ]\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}/details",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}", "details"]
+            },
+            "description": "Vincula uno o varios detailId a la venta y recalcula total automáticamente. Usa IDs reales devueltos por Create DetailSale."
+          }
+        },
+        {
           "name": "Delete Sale",
           "request": {
             "method": "DELETE",
@@ -774,21 +801,46 @@
           "name": "Create DetailSale",
           "request": {
             "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
-              "mode": "formdata",
-              "formdata": [
-                {"key": "saleId", "value": "{{saleId}}", "type": "text"},
-                {"key": "productId", "value": "{{productId}}", "type": "text"},
-                {"key": "quantity", "value": "2", "type": "text"},
-                {"key": "total", "value": "50.00", "type": "text"}
-              ]
+              "mode": "raw",
+              "raw": "{\n  \"referenceId\": \"{{productId}}\",\n  \"detailType\": \"PRODUCT\",\n  \"quantity\": 2,\n  \"saleId\": \"{{saleId}}\"\n}",
+              "options": {"raw": {"language": "json"}}
             },
             "url": {
               "raw": "{{baseUrl}}/detail-sales/create",
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "create"]
             },
-            "description": "Crea un detalle de venta (producto vendido en una venta)"
+            "description": "Crea detalle de PRODUCTO y lo vincula a la venta si envías saleId. Guarda el detail._id en {{detailProductId}} para reuso."
+          }
+        },
+        {
+          "name": "Create DetailSale (Service)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referenceId\": \"{{serviceId}}\",\n  \"detailType\": \"SERVICE\",\n  \"quantity\": 1,\n  \"saleId\": \"{{saleId}}\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/detail-sales/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["detail-sales", "create"]
+            },
+            "description": "Crea detalle de SERVICIO y lo vincula a la venta. Guarda el detail._id en {{detailServiceId}} para usarlo en Attach Detail IDs To Sale si hace falta."
           }
         },
         {

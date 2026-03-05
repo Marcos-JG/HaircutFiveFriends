@@ -7,8 +7,31 @@ export const createDetail = async (req, res) => {
     try {
         const detailData = { ...(req.body || {}) }
 
+        const saleId = detailData.saleId
+        if (saleId) {
+            const sale = await Sale.findById(saleId)
+            if (!sale) {
+                return res.status(404).json({ success: false, message: 'Sale not found' })
+            }
+        }
+
         const detail = new Detail(detailData)
         await detail.save()
+
+        // si el cliente nos dio un saleId, enlazamos el detalle y actualizamos
+        if (saleId) {
+            await Sale.findByIdAndUpdate(saleId, {
+                $addToSet: { detailId: detail._id }
+            })
+
+            const saleWithDetails = await Sale.findById(saleId).select('detailId')
+            const linkedDetails = await Detail.find({ _id: { $in: saleWithDetails.detailId } }).select('total')
+            const recalculatedTotal = linkedDetails.reduce((acc, current) => acc + Number(current.total || 0), 0)
+
+            await Sale.findByIdAndUpdate(saleId, {
+                total: recalculatedTotal
+            })
+        }
 
         return res.status(201).json({
             success: true,
