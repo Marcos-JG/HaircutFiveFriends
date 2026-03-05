@@ -29,7 +29,8 @@ const options = {
             { name: 'Appointments', description: 'Gestión de citas' },
             { name: 'Reviews', description: 'Gestión de reseñas' },
             { name: 'Sales', description: 'Gestión de ventas' },
-            { name: 'DetailSales', description: 'Gestión de detalle de ventas' }
+            { name: 'DetailSales', description: 'Gestión de detalle de ventas' },
+            { name: 'Products', description: 'Gestión de productos' }
         ],
         paths: {
             '/Health': {
@@ -1033,6 +1034,101 @@ const options = {
                     summary: 'Eliminar detalle',
                     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
                     responses: { 200: { description: 'Detalle eliminado' } }
+                }
+            },
+
+            '/products/create': {
+                post: {
+                    tags: ['Products'],
+                    summary: 'Crear producto',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', example: 'Hair Gel Strong Hold' },
+                                        description: { type: 'string', example: 'Long lasting shiny hair gel' },
+                                        price: { type: 'number', example: 35 },
+                                        stock: { type: 'number', example: 50 },
+                                        category: { type: 'string', example: 'GEL' }
+                                    },
+                                    required: ['name', 'description', 'price', 'stock', 'category']
+                                }
+                            },
+                            'multipart/form-data': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', example: 'Hair Gel Strong Hold' },
+                                        description: { type: 'string', example: 'Long lasting shiny hair gel' },
+                                        price: { type: 'number', example: 35 },
+                                        stock: { type: 'number', example: 50 },
+                                        category: { type: 'string', example: 'GEL' }
+                                    },
+                                    required: ['name', 'description', 'price', 'stock', 'category']
+                                }
+                            }
+                        }
+                    },
+                    responses: { 201: { description: 'Producto creado' } }
+                }
+            },
+            '/products': {
+                get: {
+                    tags: ['Products'],
+                    summary: 'Obtener todos los productos',
+                    responses: { 200: { description: 'Listado de productos' } }
+                }
+            },
+            '/products/{id}': {
+                get: {
+                    tags: ['Products'],
+                    summary: 'Obtener producto por ID',
+                    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                    responses: { 200: { description: 'Producto encontrado' } }
+                },
+                put: {
+                    tags: ['Products'],
+                    summary: 'Actualizar producto',
+                    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', example: 'Hair Gel Strong Hold' },
+                                        description: { type: 'string', example: 'Long lasting shiny hair gel' },
+                                        price: { type: 'number', example: 35 },
+                                        stock: { type: 'number', example: 50 },
+                                        category: { type: 'string', example: 'GEL' }
+                                    }
+                                }
+                            },
+                            'multipart/form-data': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string' },
+                                        description: { type: 'string' },
+                                        price: { type: 'number' },
+                                        stock: { type: 'number' },
+                                        category: { type: 'string' }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responses: { 200: { description: 'Producto actualizado' } }
+                },
+                delete: {
+                    tags: ['Products'],
+                    summary: 'Eliminar producto',
+                    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                    responses: { 200: { description: 'Producto eliminado' } }
                 }
             }
         }

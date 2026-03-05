@@ -15,7 +15,7 @@ export const createService = async (req, res) => {
         // Validar que todos los campos requeridos estén presentes
         if (!name || !description || !price || !duration || !category) {
             return res.status(400).json({ 
-                message: 'Por favor complete todos los campos requeridos' 
+                message: 'Por favor complete todos los campos requeridos'
             });
         }
 
@@ -33,7 +33,8 @@ export const createService = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: error.message 
+            message: error.message,
+            
         });
     }
 };

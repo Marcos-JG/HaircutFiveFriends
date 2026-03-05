@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import multer from 'multer';
 import swaggerUi from 'swagger-ui-express';
 import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
@@ -27,8 +28,8 @@ import productRoutes from '../src/product/product.routes.js'
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
 const middlewares = (app) => {
-    app.use(express.urlencoded({ extended: false, limit: '10mb' }));
-    app.use(express.json({ limit: '10mb' }))
+    app.use(express.json({ limit: '10mb' }));
+    app.use(express.urlencoded({ extended: true, limit: '10mb' }));
     app.use(cors(corsOptions));
     app.use(helmet(helmetConfiguration));
     app.use(morgan('dev'));
@@ -54,7 +55,6 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/barbers`, barberRoutes);
     app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
     app.use(`${BASE_PATH}/appointments`, appointmentRoutes);
-    app.use(`${BASE_PATH}/review`, reviewRoutes);
     app.use(`${BASE_PATH}/sales`, saleRoutes);
     app.use(`${BASE_PATH}/detail-sales`, detailSaleRoutes);
     app.use(`${BASE_PATH}/invoice`, invoiceRoutes);
