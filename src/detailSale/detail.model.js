@@ -3,18 +3,17 @@
 import mongoose from 'mongoose';
 import validateDetail from '../../middlewares/validateDetail.js';
 
-const reservationSchema = new mongoose  .Schema(
+const detailSchema = new mongoose  .Schema(
     {
-        saleId: {
+        referenceId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Sale",
-            required: [true, "Sale is required"]
+            required: [true, "Reference is required"]
         },
 
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: [true, "Product is required"]
+        detailType: {
+            type: String,
+            enum: ['SERVICE', 'PRODUCT'],
+            required: [true, "Detail type is required"]
         },
 
         quantity: {
@@ -23,8 +22,7 @@ const reservationSchema = new mongoose  .Schema(
         },
 
         total: {
-            type: Number,
-            required: [true, "Total is required"]
+            type: Number
         }
     },
     {
@@ -33,13 +31,10 @@ const reservationSchema = new mongoose  .Schema(
     }
 )
 
-reservationSchema.pre('save', validateDetail)
+detailSchema.pre('save', validateDetail)
 
-reservationSchema.index({ detailId: 1});
-reservationSchema.index({ saleId: 1});
-reservationSchema.index({ productId: 1});
-reservationSchema.index({ saleId: 1, productId: 1, detailId: 1});
+detailSchema.index({ referenceId: 1});
 
-const Detail = mongoose.model('Detail', reservationSchema);
+const Detail = mongoose.model('Detail', detailSchema);
 
 export default Detail;

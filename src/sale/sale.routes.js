@@ -20,10 +20,11 @@ router.get('/my-sales', getMySales)
 
 router.get('/', getSales)
 
-router.put('/:id', updateSale)
+router.put('/:id', uploadProfilePicture.none(), updateSale)
 
 router.delete('/:id', deleteSale)
 
 router.get('/:id', getSaleById)
+
 
 export default router

@@ -65,6 +65,21 @@ const options = {
                                     },
                                     required: ['name', 'description', 'price', 'duration', 'category', 'points']
                                 }
+                            },
+                            'multipart/form-data': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', example: 'Corte de cabello' },
+                                        description: { type: 'string', example: 'Corte clásico' },
+                                        price: { type: 'number', example: 50 },
+                                        duration: { type: 'string', example: '30 min' },
+                                        category: { type: 'string', enum: ['CORTE_DE_CABELLO', 'AFEITADO', 'RECORTES_DE_BARBA', 'ARREGLO_DE_CABELLO', 'TRATAMIENTOS_CAPILARES', 'TRATAMIENTOS_FACIALES'] },
+                                        status: { type: 'string', enum: ['activo', 'inactivo'] },
+                                        points: { type: 'number', example: 10 }
+                                    },
+                                    required: ['name', 'description', 'price', 'duration', 'category', 'points']
+                                }
                             }
                         }
                     },
@@ -95,6 +110,20 @@ const options = {
                         required: true,
                         content: {
                             'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        name: { type: 'string', example: 'Corte de cabello' },
+                                        description: { type: 'string', example: 'Corte clásico' },
+                                        price: { type: 'number', example: 50 },
+                                        duration: { type: 'string', example: '30 min' },
+                                        category: { type: 'string', enum: ['CORTE_DE_CABELLO', 'AFEITADO', 'RECORTES_DE_BARBA', 'ARREGLO_DE_CABELLO', 'TRATAMIENTOS_CAPILARES', 'TRATAMIENTOS_FACIALES'] },
+                                        status: { type: 'string', enum: ['activo', 'inactivo'] },
+                                        points: { type: 'number', example: 10 }
+                                    }
+                                }
+                            },
+                            'multipart/form-data': {
                                 schema: {
                                     type: 'object',
                                     properties: {

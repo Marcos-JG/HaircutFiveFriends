@@ -6,7 +6,7 @@ import Review from './review.model.js';
 // Crear una nueva reseña
 export const createReview = async (req, res)=>{
     try {
-        const { clienteId, barberoId, servicioId, score, comment}= req.body;
+        const { clienteId, barberoId, servicioId, score, comment } = req.body;
 
         if (!clienteId || !barberoId || !servicioId || !score || !comment) {
             return res.status(400).json({
@@ -14,8 +14,10 @@ export const createReview = async (req, res)=>{
                 message: 'Por favor complete todos los campos requeridos'
             });
         }
+
         const review = new Review(req.body);
         await review.save();
+        
         res.status(201).json({
             success: true,
             message: 'Reseña creada exitosamente',

@@ -1,8 +1,8 @@
 import multer from "multer";
 import dotenv from "dotenv";
-import {v2 as cloudinary} from "cloudinary";
-import {v4 as uuidv4} from "uuid";
-import {extname} from "path";
+import { v2 as cloudinary } from "cloudinary";
+import { v4 as uuidv4 } from "uuid";
+import { extname } from "path";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 dotenv.config();
@@ -10,9 +10,9 @@ dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const MIME_TYPES = [
@@ -36,15 +36,15 @@ const createCloudinaryUploader = (folder) => {
                 .replace(/[^a-z0-9]/gi, '-')
                 .replace(/^-+|-+$/g, '');
 
-                const shortUuid = uuidv4().substring(0, 8);
-                const publicId = `${safeBase}-${shortUuid}`;
-                return {
-                    folder: folder,
-                    public_id: publicId,
-                    allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
-                    transformation: [{width: 1000, height: 1000, crop: "limit"}],
-                    resource_type: "image"
-                }
+            const shortUuid = uuidv4().substring(0, 8);
+            const publicId = `${safeBase}-${shortUuid}`;
+            return {
+                folder: folder,
+                public_id: publicId,
+                allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
+                transformation: [{ width: 1000, height: 1000, crop: "limit" }],
+                resource_type: "image"
+            }
         }
     })
 
@@ -57,8 +57,8 @@ const createCloudinaryUploader = (folder) => {
                 cb(new Error(`Solo se permiten imagenes: ${MIME_TYPES.join(', ')}`));
             }
         },
-        limits: { 
-            fileSize: MAX_FILE_SIZE 
+        limits: {
+            fileSize: MAX_FILE_SIZE
         }
     })
 }
@@ -67,4 +67,4 @@ export const uploadProfilePicture = createCloudinaryUploader(
     process.env.CLOUDINARY_FOLDER || 'HaircutFiveFriends/haircuts'
 )
 
-export {cloudinary}
+export { cloudinary }

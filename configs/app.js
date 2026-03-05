@@ -18,6 +18,11 @@ import appointmentRoutes from '../src/appointment/appointment.routes.js';
 import reviewRoutes from '../src/review/review.routes.js';
 import saleRoutes from '../src/sale/sale.routes.js';
 import detailSaleRoutes from '../src/detailSale/detail.routes.js';
+import invoiceRoutes from '../src/invoice/invoice.routes.js';
+import statisticsRoutes from '../src/statistics/statistics.routes.js';
+import productRoutes from '../src/product/product.routes.js'
+
+
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
@@ -42,8 +47,9 @@ const routes = (app) => {
         });
 
     })
-    app.use(`${BASE_PATH}/haircuts`, haircutRoutes);
+    
     app.use(`${BASE_PATH}/service`, serviceRoutes);
+    app.use(`${BASE_PATH}/review`, reviewRoutes);
     app.use(`${BASE_PATH}/clients`, clientRoutes);
     app.use(`${BASE_PATH}/barbers`, barberRoutes);
     app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
@@ -51,6 +57,9 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/review`, reviewRoutes);
     app.use(`${BASE_PATH}/sales`, saleRoutes);
     app.use(`${BASE_PATH}/detail-sales`, detailSaleRoutes);
+    app.use(`${BASE_PATH}/invoice`, invoiceRoutes);
+    app.use(`${BASE_PATH}/statistics`, statisticsRoutes);
+    app.use(`${BASE_PATH}/products`, productRoutes)
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     app.use((req, res) => {
@@ -72,7 +81,7 @@ export const initServer = async () => {
         routes(app);
 
         app.listen(PORT, () => {
-            console.log(`Gestor de Opiniones Admin server is running on port ${PORT}`);
+            console.log(`HaircutFiveFriends server is running on port ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/Health`);
         });
 
