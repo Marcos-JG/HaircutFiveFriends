@@ -52,6 +52,16 @@
       "type": "string"
     },
     {
+      "key": "detailProductId",
+      "value": "REEMPLAZAR_DETAIL_PRODUCT_ID",
+      "type": "string"
+    },
+    {
+      "key": "detailServiceId",
+      "value": "REEMPLAZAR_DETAIL_SERVICE_ID",
+      "type": "string"
+    },
+    {
       "key": "productId",
       "value": "REEMPLAZAR_PRODUCT_ID",
       "type": "string"
@@ -795,6 +805,12 @@
           "name": "Create DetailSale",
           "request": {
             "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [

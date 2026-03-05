@@ -23,17 +23,14 @@ export const downloadInvoice = async (req, res) => {
             })
         }
 
-        // 2️⃣ Buscar detalles de la venta
+        // 2️⃣ Buscar detalles de la venta (puede ser vacío)
         const detailIds = Array.isArray(sale.detailId) ? sale.detailId : (sale.detailId ? [sale.detailId] : [])
-        const details = await Detail.find({ _id: { $in: detailIds } })
-
-        if (!details || details.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'Sale details not found'
-            })
+        let details = []
+        if (detailIds.length > 0) {
+            details = await Detail.find({ _id: { $in: detailIds } })
         }
 
+        // enriquecer incluso una lista vacía; el mapa simplemente no iterará
         const enrichedDetails = await Promise.all(
             details.map(async (detail) => {
                 if (detail.detailType === 'SERVICE') {
@@ -50,20 +47,28 @@ export const downloadInvoice = async (req, res) => {
             })
         )
 
-        // 3️⃣ Verificar si ya existe factura para esa venta
+        // 3️⃣ Obtener o crear factura para esa venta
+        // siempre recalculamos impuestos/desglose basados en la venta actual
+        const taxRate = 0.1 // 10% de IVA
+        const subtotal = Number(sale.total || 0)
+        const tax = Number((subtotal * taxRate).toFixed(2))
+        const totalWithTax = Number((subtotal + tax).toFixed(2))
+
         let invoice = await Invoice.findOne({ saleId })
-
-        if (!invoice) {
-
-            // 🔹 Crear número único (puedes mejorarlo luego a incremental)
+        if (invoice) {
+            // actualizar si ya existía (para reflejar cambios en total)
+            invoice.subtotal = subtotal
+            invoice.tax = tax
+            invoice.total = totalWithTax
+            await invoice.save()
+        } else {
             const invoiceNumber = `INV-${Date.now()}`
-
             invoice = await Invoice.create({
                 invoiceNumber,
                 saleId: sale._id,
-                subtotal: sale.total,
-                tax: 0,
-                total: sale.total,
+                subtotal,
+                tax,
+                total: totalWithTax,
                 status: 'PAID'
             })
         }

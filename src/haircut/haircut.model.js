@@ -13,7 +13,7 @@ const haircutSchema = new mongoose.Schema({
     },
     imageRef: {
         type: String,
-        default: null
+        required: [true, 'La imagen es requerida']
     },
     faceTypeRecommended: {
         type: String,

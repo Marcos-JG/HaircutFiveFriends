@@ -19,7 +19,8 @@ const saleSchema = new mongoose  .Schema(
         detailId: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "Detail",
-            required: [true, "Detail is required"]
+            // details are optional, a sale may be created without any
+            // reference to individual detail documents
         }],
 
         addressSale: {

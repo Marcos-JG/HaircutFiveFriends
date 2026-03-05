@@ -10,6 +10,17 @@ export const createSale = async (req, res) => {
     try {
         const saleData = { ...(req.body || {}) }
 
+        // allow client to send detailIds or an array of detail objects
+        if (saleData.detailIds && !saleData.detailId) {
+            saleData.detailId = saleData.detailIds
+        }
+
+        // if the request includes full detail objects, create them first
+        if (Array.isArray(saleData.details) && saleData.details.length > 0) {
+            const createdDetails = await Detail.insertMany(saleData.details)
+            saleData.detailId = createdDetails.map(d => d._id)
+        }
+
         const normalizeDetailIds = (input) => {
             if (!input) return []
 
@@ -46,35 +57,37 @@ export const createSale = async (req, res) => {
         const detailIds = normalizeDetailIds(saleData.detailId)
         saleData.detailId = detailIds
 
-        if (!detailIds || detailIds.length === 0) {
-            return res.status(400).json({ success: false, message: 'Detail IDs are required' })
-        }
-
-        const details = await Detail.find({ _id: { $in: detailIds } })
-        if (!details || details.length === 0) {
-            return res.status(404).json({ success: false, message: 'Details not found' })
-        }
-
+        // if there is at least one id, attempt to load and calculate a total
         let total = 0
-        for (const detail of details) {
-            const quantity = Number(detail.quantity) || 0
-            if (quantity <= 0) continue
-
-            if (detail.detailType === 'SERVICE') {
-                const service = await Service.findById(detail.referenceId).select('price')
-                if (!service) {
-                    return res.status(404).json({ success: false, message: 'Service reference not found' })
-                }
-                total += Number(service.price) * quantity
-            } else if (detail.detailType === 'PRODUCT') {
-                const product = await Product.findById(detail.referenceId).select('price')
-                if (!product) {
-                    return res.status(404).json({ success: false, message: 'Product reference not found' })
-                }
-                total += Number(product.price) * quantity
-            } else {
-                return res.status(400).json({ success: false, message: 'Invalid detail type' })
+        if (detailIds && detailIds.length > 0) {
+            const details = await Detail.find({ _id: { $in: detailIds } })
+            if (!details || details.length === 0) {
+                return res.status(404).json({ success: false, message: 'Details not found' })
             }
+
+            for (const detail of details) {
+                const quantity = Number(detail.quantity) || 0
+                if (quantity <= 0) continue
+
+                if (detail.detailType === 'SERVICE') {
+                    const service = await Service.findById(detail.referenceId).select('price')
+                    if (!service) {
+                        return res.status(404).json({ success: false, message: 'Service reference not found' })
+                    }
+                    total += Number(service.price) * quantity
+                } else if (detail.detailType === 'PRODUCT') {
+                    const product = await Product.findById(detail.referenceId).select('price')
+                    if (!product) {
+                        return res.status(404).json({ success: false, message: 'Product reference not found' })
+                    }
+                    total += Number(product.price) * quantity
+                } else {
+                    return res.status(400).json({ success: false, message: 'Invalid detail type' })
+                }
+            }
+        } else {
+            // no details provided; allow total to be supplied or fall back to 0
+            total = Number(saleData.total) || 0
         }
 
     saleData.total = total
@@ -148,6 +161,81 @@ export const getSaleById = async (req, res) => {
     } catch (err) {
         console.error(err)
         return res.status(500).json({ success: false, message: 'Error getting sale', err })
+    }
+}
+
+export const addDetailsToSale = async (req, res) => {
+    try {
+        const { id } = req.params
+        const payload = req.body || {}
+
+        const normalizeDetailIds = (input) => {
+            if (!input) return []
+
+            if (Array.isArray(input)) {
+                return input.flatMap((item) => normalizeDetailIds(item))
+            }
+
+            if (typeof input === 'string') {
+                const trimmed = input.trim()
+                if (!trimmed) return []
+
+                try {
+                    const parsed = JSON.parse(trimmed)
+                    return normalizeDetailIds(parsed)
+                } catch (error) {
+                    return trimmed
+                        .split(',')
+                        .map((value) => value.replace(/[\[\]"'{}]/g, '').trim())
+                        .filter(Boolean)
+                }
+            }
+
+            return [input]
+        }
+
+        const detailIds = normalizeDetailIds(payload.detailId || payload.detailIds)
+        if (detailIds.length === 0) {
+            return res.status(400).json({ success: false, message: 'Detail IDs are required' })
+        }
+
+        const currentSale = await Sale.findById(id).select('detailId')
+        if (!currentSale) {
+            return res.status(404).json({ success: false, message: 'Sale not found' })
+        }
+
+        const details = await Detail.find({ _id: { $in: detailIds } })
+        if (!details || details.length === 0 || details.length !== detailIds.length) {
+            return res.status(404).json({ success: false, message: 'Details not found' })
+        }
+
+        const mergedDetailIds = [
+            ...new Set([
+                ...(currentSale.detailId || []).map((item) => item.toString()),
+                ...detailIds.map((item) => item.toString())
+            ])
+        ]
+
+        const allLinkedDetails = await Detail.find({ _id: { $in: mergedDetailIds } }).select('total')
+        const recalculatedTotal = allLinkedDetails.reduce((acc, current) => acc + Number(current.total || 0), 0)
+
+        const sale = await Sale.findByIdAndUpdate(
+            id,
+            {
+                detailId: mergedDetailIds,
+                total: recalculatedTotal
+            },
+            { new: true }
+        ).populate('clientId').populate('detailId')
+
+        return res.status(200).json({
+            success: true,
+            message: 'Details added to sale successfully',
+            sale
+        })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ success: false, message: 'Error adding details to sale', err })
     }
 }
 

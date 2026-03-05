@@ -19,7 +19,7 @@ router.get('/sale/:saleId', getDetailsBySale)
 
 router.get('/', getDetails)
 
-router.put('/:id', updateDetail)
+router.put('/:id', uploadProfilePicture.none(), updateDetail)
 
 router.delete('/:id', deleteDetail)
 

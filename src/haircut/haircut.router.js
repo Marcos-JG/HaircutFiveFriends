@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { createHaircut, getHaircuts, getHaircutById, updateHaircut, deleteHaircut, getHaircutByFaceType, getHaircutByName } from "./haircut.controller.js"
 import { uploadProfilePicture } from "../../middlewares/file-uploader.js";
+import { validateCreateHaircut, validateUpdateHaircut } from "../../middlewares/haircut-validator.js";
 
 const router = Router();
 
 router.post(
     "/create",
     uploadProfilePicture.single("imageRef"),
+    validateCreateHaircut,
     createHaircut
 );
 
@@ -33,6 +35,7 @@ router.get(
 router.put(
     "/:id",
     uploadProfilePicture.single("imageRef"),
+    validateUpdateHaircut,
     updateHaircut
 );
 
