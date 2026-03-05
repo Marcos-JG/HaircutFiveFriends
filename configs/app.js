@@ -3,9 +3,11 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
+import { swaggerSpec } from './swagger.js';
 
 import serviceRoutes from '../src/service/service.routes.js';
 import clientRoutes from '../src/client/client.routes.js';
@@ -49,6 +51,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/review`, reviewRoutes);
     app.use(`${BASE_PATH}/sales`, saleRoutes);
     app.use(`${BASE_PATH}/detail-sales`, detailSaleRoutes);
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     app.use((req, res) => {
         res.status(404).json({
