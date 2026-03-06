@@ -3,21 +3,30 @@ import mongoose from 'mongoose';
 const invoiceSchema = new mongoose.Schema({
     invoiceNumber: {
         type: String,
-        required: true,
+        required: [true, 'Invoice number is required'],
         unique: true
     },
     saleId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sale',
-        required: true
+        required: [true, 'Sale ID is required']
     },
     issueDate: {
         type: Date,
         default: Date.now
     },
-    subtotal: Number,
-    tax: Number,
-    total: Number,
+    subtotal: {
+        type: Number,
+        required: [true, 'Subtotal is required']
+    },
+    tax: {
+        type: Number,
+        required: [true, 'Tax is required']
+    },
+    total: {
+        type: Number,
+        required: [true, 'Total is required']
+    },
     status: {
         type: String,
         enum: ['PAID', 'CANCELLED'],

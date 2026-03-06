@@ -4,12 +4,12 @@ import mongoose from 'mongoose';
 const haircutSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, 'El nombre es requerido']
     },
 
     description: {
         type: String,
-        required: true
+        required: [true, 'La descripción es requerida']
     },
     imageRef: {
         type: String,
@@ -18,7 +18,7 @@ const haircutSchema = new mongoose.Schema({
     faceTypeRecommended: {
         type: String,
         enum: ['OVALADO', 'CUADRADO', 'REDONDO', 'CORAZÓN', 'CUALQUIERA', 'TRIANGULAR'],
-        required: true
+        required: [true, 'El tipo de cara recomendado es requerido']
     }
 },
      {

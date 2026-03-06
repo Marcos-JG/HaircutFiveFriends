@@ -11,11 +11,12 @@ import {
     deleteSale
 } from './sale.controller.js'
 import { uploadProfilePicture } from '../../middlewares/file-uploader.js'
+import { validateSaleRequest } from '../../middlewares/sale-validator.js'
 import requireAddressForDomicilio from '../../middlewares/requireAddressForDomicilio.js'
 
 const router = Router()
 
-router.post('/create', uploadProfilePicture.none(), requireAddressForDomicilio, createSale)
+router.post('/create', uploadProfilePicture.none(), validateSaleRequest, requireAddressForDomicilio, createSale)
 
 router.get('/my-sales', getMySales)
 
