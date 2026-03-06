@@ -1,4 +1,4 @@
-﻿{
+{
   "info": {
     "_postman_id": "39df9b53-4fe3-49fb-b8dc-2f5d16c15bcb",
     "name": "HaircutFiveFriends API",
@@ -901,17 +901,17 @@
       "name": "Reviews",
       "item": [
         {
-          "name": "Create Review",
+          "name": "Create Review - Para Barbero",
           "request": {
             "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "clienteName", "value": "Juan Pérez", "type": "text"},
                 {"key": "barberoId", "value": "{{barberId}}", "type": "text"},
-                {"key": "servicioId", "value": "{{serviceId}}", "type": "text"},
                 {"key": "score", "value": "5", "type": "text"},
-                {"key": "comment", "value": "Excelente servicio y atenci├│n", "type": "text"}
+                {"key": "comment", "value": "Excelente corte de cabello, muy profesional y atento"}
               ]
             },
             "url": {
@@ -919,25 +919,49 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "crear"]
             },
-            "description": "Crea una nueva rese├▒a. Score debe estar entre 1 y 5."
+            "description": "Crea una reseña para un BARBERO. Campos: clienteName (nombre cliente), barberoId (ID barbero), score (1-5), comment (10-500 caracteres)"
+          }
+        },
+        {
+          "name": "Create Review - Para Servicio",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clienteName", "value": "María López", "type": "text"},
+                {"key": "servicioName", "value": "Corte de cabello", "type": "text"},
+                {"key": "score", "value": "4", "type": "text"},
+                {"key": "comment", "value": "Buen servicio en general, quedé satisfecha con el resultado"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "crear"]
+            },
+            "description": "Crea una reseña para un SERVICIO. Campos: clienteName (nombre cliente), servicioName (nombre servicio), score (1-5), comment (10-500 caracteres)"
           }
         },
         {
           "name": "Get All Reviews",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/obtener",
               "host": ["{{baseUrl}}"],
               "path": ["review", "obtener"]
             },
-            "description": "Obtiene todas las rese├▒as registradas"
+            "description": "Obtiene todas las reseñas registradas"
           }
         },
         {
           "name": "Get Review By ID",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/obtener/{{reviewId}}",
               "host": ["{{baseUrl}}"],
@@ -950,6 +974,7 @@
           "name": "Update Review",
           "request": {
             "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -969,6 +994,7 @@
           "name": "Delete Review",
           "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/eliminar/{{reviewId}}",
               "host": ["{{baseUrl}}"],
@@ -981,48 +1007,52 @@
           "name": "Get Reviews By Barbero",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/barbero/{{barberId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "barbero", "{{barberId}}"]
             },
-            "description": "Obtiene todas las rese├▒as de un barbero espec├¡fico"
+            "description": "Obtiene todas las reseñas de un barbero específico"
           }
         },
         {
           "name": "Get Reviews By Cliente",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/cliente/{{clientId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "cliente", "{{clientId}}"]
             },
-            "description": "Obtiene todas las rese├▒as realizadas por un cliente espec├¡fico"
+            "description": "Obtiene todas las reseñas realizadas por un cliente específico"
           }
         },
         {
           "name": "Get Reviews By Servicio",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/servicio/{{serviceId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "servicio", "{{serviceId}}"]
             },
-            "description": "Obtiene todas las rese├▒as de un servicio espec├¡fico"
+            "description": "Obtiene todas las reseñas de un servicio específico"
           }
         },
         {
           "name": "Get Average Score By Barbero",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/promedio/{{barberId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "promedio", "{{barberId}}"]
             },
-            "description": "Obtiene el promedio de calificaci├│n de un barbero"
+            "description": "Obtiene el promedio de calificación de un barbero"
           }
         }
       ]
@@ -1151,6 +1181,40 @@
       ]
     },
     {
+      "name": "Generar Estadísticas PDF",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/statistics/pdf",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3006",
+          "path": ["HaircutFiveFriends", "api", "v1", "statistics", "pdf"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Sale a COMPLETADO",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"total\": 200,\n  \"status\": \"COMPLETADO\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/sales/{{saleId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3006",
+          "path": ["HaircutFiveFriends", "api", "v1", "sales", "{{saleId}}"]
+        }
+      },
       "name": "Complemetary Sales",
       "item": [
         {

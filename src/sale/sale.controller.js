@@ -244,6 +244,37 @@ export const updateSale = async (req, res) => {
         const { id } = req.params
         const updateData = { ...(req.body || {}) }
 
+        // Normalizar detailId igual que en createSale
+        const normalizeDetailIds = (input) => {
+            if (!input) return []
+
+            if (Array.isArray(input)) {
+                return input.flatMap((item) => normalizeDetailIds(item))
+            }
+
+            if (typeof input === 'string') {
+                const trimmed = input.trim()
+                if (!trimmed) return []
+
+                try {
+                    const parsed = JSON.parse(trimmed)
+                    return normalizeDetailIds(parsed)
+                } catch (error) {
+                    return trimmed
+                        .split(',')
+                        .map((value) => value.replace(/[\[\]"'{}]/g, '').trim())
+                        .filter(Boolean)
+                }
+            }
+
+            return [input]
+        }
+
+        // Si detailId viene en los datos, normalizarlo
+        if (updateData.detailId) {
+            updateData.detailId = normalizeDetailIds(updateData.detailId)
+        }
+
         const sale = await Sale.findByIdAndUpdate(id, updateData, { new: true })
         if (!sale) {
             return res.status(404).json({ success: false, message: 'Sale not found' })
