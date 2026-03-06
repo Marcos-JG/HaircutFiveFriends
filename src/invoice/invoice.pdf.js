@@ -63,7 +63,7 @@ export default function generateInvoicePDF({ invoice, sale, details }) {
       doc.fillColor('white')
          .fontSize(12);
 
-      doc.text('Product', 60, tableTop + 7);
+      doc.text('Item', 60, tableTop + 7);
       doc.text('Qty', pageWidth / 2 - 20, tableTop + 7);
       doc.text('Price', pageWidth - 140, tableTop + 7);
 
@@ -75,9 +75,10 @@ export default function generateInvoicePDF({ invoice, sale, details }) {
 
       details.forEach((detail, index) => {
 
-         const productName = detail.productId?.name || 'Unknown';
+         // name could come from product or service depending on type
+         const productName = detail.productId?.name || detail.productId?.serviceName || 'Unknown';
 
-         const price = detail.productId?.price || 0;
+         const price = Number(detail.productId?.price || 0).toFixed(2);
 
          if (index % 2 === 0) {
             doc.rect(50, positionY - 5, pageWidth - 100, 25)
