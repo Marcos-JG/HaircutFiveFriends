@@ -198,3 +198,25 @@ export const getServicesByName = async (req, res) => {
         });
     }
 };
+
+// Obtener servicios canjeables por puntos
+export const getRedeemableServices = async (req, res) => {
+    try {
+        const services = await Service.find({
+            pointsPrice: { $gt: 0 },
+            status: 'activo'
+        }).select('name description price pointsPrice duration category')
+
+        res.status(200).json({
+            success: true,
+            message: 'Servicios canjeables por puntos',
+            data: services
+        })
+
+    } catch (error) {
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        })
+    }
+}

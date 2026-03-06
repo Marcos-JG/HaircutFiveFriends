@@ -9,7 +9,8 @@ import {
     deleteService,
     getServiceById,
     getServicesByName,
-    getServicesByStatus 
+    getServicesByStatus,
+    getRedeemableServices
 } from './service.controller.js';
 import { validateCreateService, validateUpdateService } from '../../middlewares/service-validator.js';
 
@@ -24,6 +25,7 @@ router.put('/actualizar/:id', parseFormData, validateUpdateService, updateServic
 router.delete('/eliminar/:id', deleteService);          // DELETE - Eliminar servicio
 
 // Rutas de filtrado
+router.get('/redeemable', getRedeemableServices);       // GET - Servicios canjeables por puntos
 router.get('/estado/:status', getServicesByStatus);     // GET - Filtrar por estado
 router.get('/tipo/:name', getServicesByName);           // GET - Filtrar por tipo de servicio
 

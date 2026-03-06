@@ -99,3 +99,21 @@ export const deleteClient = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+
+export const getClientPoints = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const client = await Client.findById(id).select('name points');
+        if (!client) return res.status(404).json({ success: false, message: 'Client not found' });
+        return res.status(200).json({ 
+            success: true, 
+            data: {
+                clientId: client._id,
+                name: client.name,
+                points: client.points || 0
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}

@@ -4,6 +4,7 @@ import Sale from './sale.model.js'
 import Detail from '../detailSale/detail.model.js'
 import Product from '../product/product.model.js'
 import Service from '../service/service.model.js'
+import Client from '../client/client.model.js'
 import increasePointsForSale from '../../middlewares/pointPerSale.js'
 
 export const createSale = async (req, res) => {
@@ -57,8 +58,32 @@ export const createSale = async (req, res) => {
         const detailIds = normalizeDetailIds(saleData.detailId)
         saleData.detailId = detailIds
 
+        // Obtener información del cliente para verificar puntos
+        const client = await Client.findById(saleData.clientId)
+        if (!client) {
+            return res.status(404).json({ success: false, message: 'Cliente no encontrado' })
+        }
+
+        // Mapa de items que se pagarán con puntos (viene del request)
+        // Formato: { detailId: true/false }
+        let itemsWithPoints = {}
+        if (saleData.itemsWithPoints) {
+            if (typeof saleData.itemsWithPoints === 'string') {
+                try {
+                    itemsWithPoints = JSON.parse(saleData.itemsWithPoints)
+                } catch (error) {
+                    console.log('Error parseando itemsWithPoints:', error)
+                    itemsWithPoints = {}
+                }
+            } else if (typeof saleData.itemsWithPoints === 'object') {
+                itemsWithPoints = saleData.itemsWithPoints
+            }
+        }
+
         // if there is at least one id, attempt to load and calculate a total
-        let total = 0
+        let moneyTotal = 0
+        let totalPointsNeeded = 0
+
         if (detailIds && detailIds.length > 0) {
             const details = await Detail.find({ _id: { $in: detailIds } })
             if (!details || details.length === 0) {
@@ -69,44 +94,120 @@ export const createSale = async (req, res) => {
                 const quantity = Number(detail.quantity) || 0
                 if (quantity <= 0) continue
 
+                const detailId = detail._id.toString()
+                const usePoints = itemsWithPoints[detailId] === true
+
                 if (detail.detailType === 'SERVICE') {
-                    const service = await Service.findById(detail.referenceId).select('price')
+                    const service = await Service.findById(detail.referenceId).select('price pointsPrice')
                     if (!service) {
                         return res.status(404).json({ success: false, message: 'Service reference not found' })
                     }
-                    total += Number(service.price) * quantity
+
+                    if (usePoints) {
+                        if (!service.pointsPrice || service.pointsPrice <= 0) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: `El servicio "${service.name || 'desconocido'}" no tiene precio en puntos definido` 
+                            })
+                        }
+                        totalPointsNeeded += Number(service.pointsPrice) * quantity
+                        detail.paidWithPoints = true
+                        detail.pointsUsed = Number(service.pointsPrice) * quantity
+                        detail.total = 0
+                    } else {
+                        moneyTotal += Number(service.price) * quantity
+                        detail.paidWithPoints = false
+                        detail.pointsUsed = 0
+                        detail.total = Number(service.price) * quantity
+                    }
+                    await detail.save()
+
                 } else if (detail.detailType === 'PRODUCT') {
-                    const product = await Product.findById(detail.referenceId).select('price')
+                    const product = await Product.findById(detail.referenceId).select('price pointsPrice')
                     if (!product) {
                         return res.status(404).json({ success: false, message: 'Product reference not found' })
                     }
-                    total += Number(product.price) * quantity
+
+                    if (usePoints) {
+                        if (!product.pointsPrice || product.pointsPrice <= 0) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                message: `El producto "${product.name || 'desconocido'}" no tiene precio en puntos definido` 
+                            })
+                        }
+                        totalPointsNeeded += Number(product.pointsPrice) * quantity
+                        detail.paidWithPoints = true
+                        detail.pointsUsed = Number(product.pointsPrice) * quantity
+                        detail.total = 0
+                    } else {
+                        moneyTotal += Number(product.price) * quantity
+                        detail.paidWithPoints = false
+                        detail.pointsUsed = 0
+                        detail.total = Number(product.price) * quantity
+                    }
+                    await detail.save()
+
                 } else {
                     return res.status(400).json({ success: false, message: 'Invalid detail type' })
                 }
             }
+
+            // Verificar que el cliente tenga suficientes puntos
+            if (totalPointsNeeded > 0 && client.points < totalPointsNeeded) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: `Puntos insuficientes. Necesitas ${totalPointsNeeded} puntos pero solo tienes ${client.points}` 
+                })
+            }
+
+            // Restar los puntos del cliente si se usaron
+            if (totalPointsNeeded > 0) {
+                await Client.findByIdAndUpdate(
+                    saleData.clientId,
+                    { $inc: { points: -totalPointsNeeded } },
+                    { new: true }
+                )
+            }
+
         } else {
             // no details provided; allow total to be supplied or fall back to 0
-            total = Number(saleData.total) || 0
+            moneyTotal = Number(saleData.total) || 0
         }
 
-    saleData.total = total
-    const pointsToAdd = Number((total * 0.1).toFixed(2))
-    saleData.pointsMessage = `Se te agregaron ${pointsToAdd} puntos a tu cuenta`
+        saleData.total = moneyTotal
+        saleData.moneyTotal = moneyTotal
+        saleData.totalPointsUsed = totalPointsNeeded
+
+        // Solo dar puntos por el monto pagado en dinero, no por items canjeados
+        const pointsToAdd = Number((moneyTotal * 0.1).toFixed(2))
+        
+        if (totalPointsNeeded > 0) {
+            saleData.pointsMessage = `Canjeaste ${totalPointsNeeded} puntos. `
+            if (pointsToAdd > 0) {
+                saleData.pointsMessage += `Se te agregaron ${pointsToAdd} puntos por tu compra.`
+            }
+        } else {
+            saleData.pointsMessage = `Se te agregaron ${pointsToAdd} puntos a tu cuenta`
+        }
 
         const sale = new Sale(saleData)
         await sale.save()
 
-        await increasePointsForSale({
-            clientId: sale.clientId,
-            detailIds: sale.detailId,
-            saleTotal: sale.total
-        })
+        // Solo sumar puntos si hubo pago en dinero
+        if (moneyTotal > 0) {
+            await increasePointsForSale({
+                clientId: sale.clientId,
+                detailIds: sale.detailId,
+                saleTotal: moneyTotal
+            })
+        }
 
         return res.status(201).json({
             success: true,
             message: 'Sale created successfully',
-            sale
+            sale,
+            pointsUsed: totalPointsNeeded,
+            clientPointsRemaining: client.points
         })
 
     } catch (err) {

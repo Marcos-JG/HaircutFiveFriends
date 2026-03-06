@@ -19,6 +19,11 @@ const serviceSchema = mongoose.Schema(
             required: [true, 'El precio del servicio es obligatorio'],
             min: 0
         },
+        pointsPrice: {
+            type: Number,
+            default: null,
+            min: 0
+        },
         duration: {
             type: String,
             required: [true, 'La duración del servicio es obligatoria'],

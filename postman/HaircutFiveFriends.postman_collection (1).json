@@ -94,7 +94,7 @@
       "name": "Service",
       "item": [
         {
-          "name": "Create Service",
+          "name": "Create Service (con pointsPrice)",
           "request": {
             "method": "POST",
             "body": {
@@ -103,6 +103,7 @@
                 {"key": "name", "value": "Corte Premium", "type": "text"},
                 {"key": "description", "value": "Corte con diseño personalizado", "type": "text"},
                 {"key": "price", "value": "80", "type": "text"},
+                {"key": "pointsPrice", "value": "50", "type": "text"},
                 {"key": "duration", "value": "60 min", "type": "text"},
                 {"key": "category", "value": "CORTE_DE_CABELLO", "type": "text"}
               ]
@@ -112,7 +113,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "crear"]
             },
-            "description": "Crea un nuevo servicio. Campos requeridos: name, description, price, duration, category. Status por defecto es 'activo'. Categorías válidas: CORTE_DE_CABELLO, AFEITADO, RECORTES_DE_BARBA, ARREGLO_DE_CABELLO, TRATAMIENTOS_CAPILARES, TRATAMIENTOS_FACIALES"
+            "description": "Crea un nuevo servicio. Campos requeridos: name, description, price, duration, category. Campos opcionales: pointsPrice (puntos necesarios para canjear). Status por defecto es 'activo'. Categorías válidas: CORTE_DE_CABELLO, AFEITADO, RECORTES_DE_BARBA, ARREGLO_DE_CABELLO, TRATAMIENTOS_CAPILARES, TRATAMIENTOS_FACIALES"
           }
         },
         {
@@ -124,7 +125,19 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "obtener"]
             },
-            "description": "Obtiene todos los servicios registrados en el sistema"
+            "description": "Obtiene todos los servicios registrados en el sistema (incluyendo precio normal y precio en puntos)"
+          }
+        },
+        {
+          "name": "Get Redeemable Services",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/redeemable",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "redeemable"]
+            },
+            "description": "Obtiene SOLO servicios que se pueden canjear con puntos (pointsPrice > 0). Útil para mostrar al cliente qué puede comprar con puntos."
           }
         },
         {
@@ -136,11 +149,11 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "obtener", "{{serviceId}}"]
             },
-            "description": "Obtiene un servicio espec├¡fico por su ID"
+            "description": "Obtiene un servicio específico por su ID"
           }
         },
         {
-          "name": "Update Service",
+          "name": "Update Service (con pointsPrice)",
           "request": {
             "method": "PUT",
             "body": {
@@ -149,6 +162,7 @@
                 {"key": "name", "value": "Corte Clásico", "type": "text"},
                 {"key": "description", "value": "Corte tradicional con máquina", "type": "text"},
                 {"key": "price", "value": "50", "type": "text"},
+                {"key": "pointsPrice", "value": "30", "type": "text"},
                 {"key": "duration", "value": "45 min", "type": "text"},
                 {"key": "category", "value": "CORTE_DE_CABELLO", "type": "text"},
                 {"key": "status", "value": "activo", "type": "text"}
@@ -159,7 +173,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "actualizar", "{{serviceId}}"]
             },
-            "description": "Actualiza un servicio existente. Todos los campos son opcionales. Envía como form-data."
+            "description": "Actualiza un servicio existente. Todos los campos son opcionales. Campos actualizables: name, description, price, pointsPrice (puntos para canjeación), duration, category, status. Envía como form-data. Si pointsPrice es null, el servicio no se puede canjear con puntos."
           }
         },
         {
@@ -195,7 +209,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "tipo", "Corte Premium"]
             },
-            "description": "Busca servicios por nombre (b├║squeda parcial)"
+            "description": "Busca servicios por nombre (búsqueda parcial)"
           }
         }
       ]
@@ -247,7 +261,19 @@
               "host": ["{{baseUrl}}"],
               "path": ["clients", "{{clientId}}"]
             },
-            "description": "Obtiene informaci├│n detallada de un cliente espec├¡fico"
+            "description": "Obtiene información detallada de un cliente específico"
+          }
+        },
+        {
+          "name": "Get Client Points",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}/points",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}", "points"]
+            },
+            "description": "Obtiene los puntos disponibles y información del cliente. Respuesta: {clientId, name, points}. Útil para consultar puntos ANTES de hacer una venta con canje de puntos."
           }
         },
         {
@@ -704,7 +730,43 @@
       "name": "Sales",
       "item": [
         {
-          "name": "Create Sale",
+          "name": "Get Client Points",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}/points",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}", "points"]
+            },
+            "description": "Ver puntos disponibles del cliente antes de hacer una venta"
+          }
+        },
+        {
+          "name": "Get Redeemable Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/redeemable",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "redeemable"]
+            },
+            "description": "Ver productos que se pueden canjear con puntos (tienen pointsPrice > 0)"
+          }
+        },
+        {
+          "name": "Get Redeemable Services",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service/redeemable",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "redeemable"]
+            },
+            "description": "Ver servicios que se pueden canjear con puntos (tienen pointsPrice > 0)"
+          }
+        },
+        {
+          "name": "Create Sale (con canje de puntos)",
           "request": {
             "method": "POST",
             "body": {
@@ -715,6 +777,7 @@
                 {"key": "addressSale", "value": "Dirección venta", "type": "text"},
                 {"key": "saleDate", "value": "2026-03-03T10:00:00.000Z", "type": "text"},
                 {"key": "detailId", "value": "[\"{{detailSaleId}}\"]", "type": "text"},
+                {"key": "itemsWithPoints", "value": "{\"{{detailSaleId}}\": true}", "type": "text"},
                 {"key": "paymentMethod", "value": "EFECTIVO", "type": "text"}
               ]
             },
@@ -723,7 +786,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "create"]
             },
-            "description": "Crea una nueva venta. Campos requeridos: clientId, saleDate, detailId (array JSON de Detail IDs), paymentMethod. saleType: LOCAL o DOMICILIO (si es DOMICILIO, addressSale es requerido). paymentMethod: EFECTIVO o TARJETA. Total se calcula automáticamente. Status inicia en PENDIENTE."
+            "description": "Crea una nueva venta con opción de canje de puntos.\n\nCampos requeridos:\n- clientId: ID del cliente\n- saleDate: Fecha ISO de la venta\n- detailId: Array JSON de Detail IDs (ej: [\"id1\", \"id2\"])\n- paymentMethod: EFECTIVO o TARJETA\n\nCampos opcionales:\n- saleType: LOCAL (default) o DOMICILIO\n- addressSale: Requerido si saleType=DOMICILIO\n- itemsWithPoints: JSON {\"detailId\": true/false}\n  * true = pagar con puntos (item sale en Q0)\n  * false = pagar con dinero\n\nEjemplo itemsWithPoints:\n{\"63xyz789\": true, \"63xyz790\": false, \"63xyz791\": true}\n\nRespuesta incluye:\n- total: Monto pagado en dinero (después de restar canjeados)\n- totalPointsUsed: Puntos gastados\n- moneyTotal: Total en dinero\n- pointsMessage: Resumen de la operación\n- clientPointsRemaining: Puntos que le quedan al cliente"
           }
         },
         {
@@ -747,7 +810,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "my-sales"]
             },
-            "description": "Obtiene las ventas del usuario autenticado (requiere autenticaci├│n)"
+            "description": "Obtiene las ventas del usuario autenticado (requiere autenticación)"
           }
         },
         {
@@ -759,7 +822,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "{{saleId}}"]
             },
-            "description": "Obtiene una venta espec├¡fica por su ID"
+            "description": "Obtiene una venta específica por su ID"
           }
         },
         {
@@ -824,7 +887,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "create"]
             },
-            "description": "Crea un detalle de venta (línea de producto o servicio en una venta). Campos requeridos: referenceId (ID del producto/servicio), detailType (SERVICE o PRODUCT), quantity. Total se calcula automáticamente según el precio de la referencia y cantidad."
+            "description": "Crea un detalle de venta (línea de producto o servicio en una venta). Campos requeridos: referenceId (ID del producto/servicio), detailType (SERVICE o PRODUCT), quantity. Total se calcula automáticamente.\n\nIMPORTANTE - Sistema de Puntos:\n- Los detalles pueden pagarse con PUNTOS o DINERO\n- Esto se define en la VENTA, no aquí, mediante itemsWithPoints\n- Respuesta incluye: paidWithPoints (bool), pointsUsed (número)\n- Campos agregados por el sistema al crear la venta"
           }
         },
         {
@@ -836,7 +899,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales"]
             },
-            "description": "Obtiene todos los detalles de ventas"
+            "description": "Obtiene todos los detalles de ventas (incluyendo información de si fueron pagados con puntos)"
           }
         },
         {
@@ -848,7 +911,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "{{detailSaleId}}"]
             },
-            "description": "Obtiene un detalle de venta espec├¡fico por su ID"
+            "description": "Obtiene un detalle de venta específico. Respuesta incluye: paidWithPoints, pointsUsed, total, etc."
           }
         },
         {
@@ -860,7 +923,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "sale", "{{saleId}}"]
             },
-            "description": "Obtiene todos los detalles (productos) de una venta espec├¡fica"
+            "description": "Obtiene todos los detalles de una venta específica (muestra si cada item se pagó con dinero o puntos)"
           }
         },
         {
@@ -880,7 +943,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "{{detailSaleId}}"]
             },
-            "description": "Actualiza un detalle de venta existente. Campos actualizables: referenceId (ID del producto/servicio), detailType (SERVICE/PRODUCT), quantity. Todos opcionales. Total se recalcula automáticamente."
+            "description": "Actualiza un detalle de venta existente. Campos actualizables: referenceId, detailType, quantity. Totals se recalcula automáticamente. NOTA: paidWithPoints y pointsUsed se asignan al crear/actualizar la VENTA, no aquí."
           }
         },
         {
@@ -1061,7 +1124,7 @@
       "name": "Products",
       "item": [
         {
-          "name": "Create Product",
+          "name": "Create Product (con pointsPrice)",
           "request": {
             "method": "POST",
             "body": {
@@ -1070,6 +1133,7 @@
                 {"key": "name", "value": "Hair Gel Strong Hold", "type": "text"},
                 {"key": "description", "value": "Long lasting shiny hair gel", "type": "text"},
                 {"key": "price", "value": "35", "type": "text"},
+                {"key": "pointsPrice", "value": "20", "type": "text"},
                 {"key": "stock", "value": "50", "type": "text"},
                 {"key": "category", "value": "GEL", "type": "text"},
                 {"key": "image", "type": "file", "src": ""},
@@ -1081,7 +1145,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["products", "create"]
             },
-            "description": "Crea un nuevo producto. Campos requeridos: name, description, price, stock, category. image es opcional (se sube a Cloudinary). status por defecto es 'active'. Categorías válidas: SHAMPOO, WAX, GEL, BEARD_OIL, MACHINES, ACCESSORIES."
+            "description": "Crea un nuevo producto. Campos requeridos: name, description, price, stock, category. Campos opcionales: pointsPrice (puntos necesarios para canjear), image (se sube a Cloudinary), status. Categorías válidas: SHAMPOO, WAX, GEL, BEARD_OIL, MACHINES, ACCESSORIES. Si pointsPrice se pone, el cliente puede canjear con puntos."
           }
         },
         {
@@ -1093,7 +1157,19 @@
               "host": ["{{baseUrl}}"],
               "path": ["products"]
             },
-            "description": "Obtiene todos los productos registrados"
+            "description": "Obtiene todos los productos registrados (incluyendo precio normal y precio en puntos)"
+          }
+        },
+        {
+          "name": "Get Redeemable Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/redeemable",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "redeemable"]
+            },
+            "description": "Obtiene SOLO productos que se pueden canjear con puntos (pointsPrice > 0). Útil para mostrar al cliente qué puede comprar con puntos."
           }
         },
         {
@@ -1109,7 +1185,7 @@
           }
         },
         {
-          "name": "Update Product",
+          "name": "Update Product (con pointsPrice)",
           "request": {
             "method": "PUT",
             "body": {
@@ -1118,6 +1194,7 @@
                 {"key": "name", "value": "Hair Gel Premium", "type": "text"},
                 {"key": "description", "value": "Premium hair gel with extra hold", "type": "text"},
                 {"key": "price", "value": "40", "type": "text"},
+                {"key": "pointsPrice", "value": "25", "type": "text"},
                 {"key": "stock", "value": "60", "type": "text"},
                 {"key": "category", "value": "GEL", "type": "text"},
                 {"key": "image", "type": "file", "src": ""},
@@ -1129,7 +1206,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["products", "{{productId}}"]
             },
-            "description": "Actualiza un producto existente. Campos actualizables: name, description, price, stock, category, image (archivo), status (active/inactive). Todos opcionales."
+            "description": "Actualiza un producto existente. Campos actualizables: name, description, price, pointsPrice (puntos para canjeación), stock, category, image (archivo), status (active/inactive). Todos opcionales. Si pointsPrice es null, el producto no se puede canjear con puntos."
           }
         },
         {

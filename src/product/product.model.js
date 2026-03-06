@@ -22,6 +22,12 @@ const productSchema = new mongoose.Schema(
       min: 0
     },
 
+    pointsPrice: {
+      type: Number,
+      default: null,
+      min: 0
+    },
+
     stock: {
       type: Number,
       required: [true, 'Stock is required'],

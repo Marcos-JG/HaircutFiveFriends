@@ -37,6 +37,16 @@ const saleSchema = new mongoose  .Schema(
             required: [true, "Total is required"]
         },
 
+        totalPointsUsed: {
+            type: Number,
+            default: 0
+        },
+
+        moneyTotal: {
+            type: Number,
+            default: 0
+        },
+
         pointsMessage: {
             type: String,
             default: null

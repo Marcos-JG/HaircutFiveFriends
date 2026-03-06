@@ -21,6 +21,14 @@ const detailSchema = new mongoose  .Schema(
             required: [true, "Quantity is required"]
         },
 
+        paidWithPoints: {
+            type: Boolean
+        },
+
+        pointsUsed: {
+            type: Number
+        },
+
         total: {
             type: Number
         }

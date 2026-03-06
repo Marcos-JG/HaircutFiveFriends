@@ -137,3 +137,25 @@ export const deleteProduct = async (req, res) => {
         })
     }
 }
+
+// Obtener productos canjeables por puntos
+export const getRedeemableProducts = async (req, res) => {
+    try {
+        const products = await Product.find({
+            pointsPrice: { $gt: 0 },
+            status: 'active'
+        }).select('name description price pointsPrice image category stock')
+
+        return res.status(200).json({
+            success: true,
+            message: 'Productos canjeables por puntos',
+            data: products
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
