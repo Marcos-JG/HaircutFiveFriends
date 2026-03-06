@@ -5,7 +5,12 @@ import Product from './product.model.js'
 // Crear producto
 export const createProduct = async (req, res) => {
     try {
-        const product = new Product(req.body)
+        const data = req.body;
+        if (req.file) {
+            data.image = req.file.path;
+        }
+
+        const product = new Product(data)
         await product.save()
 
         return res.status(201).json({
@@ -76,13 +81,14 @@ export const getProductById = async (req, res) => {
 // Actualizar
 export const updateProduct = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
+        const data = req.body;
 
-        const product = await Product.findByIdAndUpdate(
-            id,
-            req.body,
-            { new: true }
-        )
+        if (req.file) {
+            data.image = req.file.path;
+        }
+
+        const product = await Product.findByIdAndUpdate(id, data, { new: true })
 
         if (!product) {
             return res.status(404).json({

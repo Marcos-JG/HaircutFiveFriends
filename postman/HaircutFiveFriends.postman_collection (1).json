@@ -3,7 +3,7 @@
     "_postman_id": "39df9b53-4fe3-49fb-b8dc-2f5d16c15bcb",
     "name": "HaircutFiveFriends API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Colección completa de endpoints del proyecto HaircutFiveFriends - Incluye todos los endpoints de la API para gestión de clientes, barberos, servicios, citas, reseñas, ventas y más."
+    "description": "Colecci├│n completa de endpoints del proyecto HaircutFiveFriends - Incluye todos los endpoints de la API para gesti├│n de clientes, barberos, servicios, citas, rese├▒as, ventas y m├ís."
   },
   "variable": [
     {
@@ -75,7 +75,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["Health"]
             },
-            "description": "Verifica que el servidor esté funcionando correctamente"
+            "description": "Verifica que el servidor est├® funcionando correctamente"
           }
         }
       ]
@@ -88,16 +88,21 @@
           "request": {
             "method": "POST",
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Corte Premium\",\n  \"description\": \"Corte con diseño personalizado\",\n  \"price\": 80,\n  \"duration\": \"60 min\",\n  \"category\": \"CORTE_DE_CABELLO\",\n  \"points\": 20\n}",
-              "options": {"raw": {"language": "json"}}
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Corte Premium", "type": "text"},
+                {"key": "description", "value": "Corte con diseño personalizado", "type": "text"},
+                {"key": "price", "value": "80", "type": "text"},
+                {"key": "duration", "value": "60 min", "type": "text"},
+                {"key": "category", "value": "CORTE_DE_CABELLO", "type": "text"}
+              ]
             },
             "url": {
               "raw": "{{baseUrl}}/service/crear",
               "host": ["{{baseUrl}}"],
               "path": ["service", "crear"]
             },
-            "description": "Crea un nuevo servicio. Incluye nombre, descripción, precio, duración, categoría y puntos."
+            "description": "Crea un nuevo servicio. Campos requeridos: name, description, price, duration, category. Status por defecto es 'activo'. Categorías válidas: CORTE_DE_CABELLO, AFEITADO, RECORTES_DE_BARBA, ARREGLO_DE_CABELLO, TRATAMIENTOS_CAPILARES, TRATAMIENTOS_FACIALES"
           }
         },
         {
@@ -121,7 +126,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "obtener", "{{serviceId}}"]
             },
-            "description": "Obtiene un servicio específico por su ID"
+            "description": "Obtiene un servicio espec├¡fico por su ID"
           }
         },
         {
@@ -129,16 +134,22 @@
           "request": {
             "method": "PUT",
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Corte Clásico\",\n  \"price\": 50\n}",
-              "options": {"raw": {"language": "json"}}
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Corte Clásico", "type": "text"},
+                {"key": "description", "value": "Corte tradicional con máquina", "type": "text"},
+                {"key": "price", "value": "50", "type": "text"},
+                {"key": "duration", "value": "45 min", "type": "text"},
+                {"key": "category", "value": "CORTE_DE_CABELLO", "type": "text"},
+                {"key": "status", "value": "activo", "type": "text"}
+              ]
             },
             "url": {
               "raw": "{{baseUrl}}/service/actualizar/{{serviceId}}",
               "host": ["{{baseUrl}}"],
               "path": ["service", "actualizar", "{{serviceId}}"]
             },
-            "description": "Actualiza un servicio existente. Los campos son opcionales."
+            "description": "Actualiza un servicio existente. Todos los campos son opcionales. Envía como form-data."
           }
         },
         {
@@ -174,7 +185,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["service", "tipo", "Corte Premium"]
             },
-            "description": "Busca servicios por nombre (búsqueda parcial)"
+            "description": "Busca servicios por nombre (b├║squeda parcial)"
           }
         }
       ]
@@ -189,14 +200,12 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "userId", "value": "u123", "type": "text"},
                 {"key": "name", "value": "Juan Perez", "type": "text"},
                 {"key": "phone", "value": "+50200000000", "type": "text"},
                 {"key": "email", "value": "juan@example.com", "type": "text"},
                 {"key": "password", "value": "SecurePass123", "type": "text"},
-                {"key": "profilePicture", "type": "file", "src": []},
                 {"key": "faceshape", "value": "OVALADO", "type": "text"},
-                {"key": "points", "value": "0", "type": "text"}
+                {"key": "profilePicture", "type": "file", "src": ""}
               ]
             },
             "url": {
@@ -204,7 +213,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["clients"]
             },
-            "description": "Crea un nuevo cliente. Incluye foto de perfil opcional. Faceshape valores: OVALADO, CUADRADO, REDONDO, CORAZON, DIAMANTE"
+            "description": "Crea un nuevo cliente. Campos requeridos: name, phone, email, password. profilePicture es opcional (se sube a Cloudinary). Faceshape valores: OVALADO, CUADRADO, REDONDO, CORAZON, DIAMANTE. Points inicia en 0, status en true."
           }
         },
         {
@@ -228,7 +237,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["clients", "{{clientId}}"]
             },
-            "description": "Obtiene información detallada de un cliente específico"
+            "description": "Obtiene informaci├│n detallada de un cliente espec├¡fico"
           }
         },
         {
@@ -240,7 +249,9 @@
               "formdata": [
                 {"key": "name", "value": "Juan Actualizado", "type": "text"},
                 {"key": "phone", "value": "+50211111111", "type": "text"},
-                {"key": "faceshape", "value": "CUADRADO", "type": "text"}
+                {"key": "email", "value": "juannuevo@example.com", "type": "text"},
+                {"key": "faceshape", "value": "CUADRADO", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": ""}
               ]
             },
             "url": {
@@ -248,7 +259,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["clients", "{{clientId}}"]
             },
-            "description": "Actualiza datos de un cliente existente. Todos los campos son opcionales."
+            "description": "Actualiza datos de un cliente existente. Campos actualizables: name, phone, email, faceshape, profilePicture (archivo). Todos opcionales. NO se puede actualizar password ni status."
           }
         },
         {
@@ -275,13 +286,12 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "userId", "value": "b123", "type": "text"},
                 {"key": "name", "value": "Carlos", "type": "text"},
                 {"key": "email", "value": "carlos@example.com", "type": "text"},
                 {"key": "password", "value": "SecurePass123", "type": "text"},
                 {"key": "phone", "value": "+50222222222", "type": "text"},
-                {"key": "profilePicture", "type": "file", "src": []},
-                {"key": "schedule", "value": "[{\"days\":\"Lunes\",\"hours\":\"09:00-17:00\"}]", "type": "text"}
+                {"key": "profilePicture", "type": "file", "src": ""},
+                {"key": "schedule", "value": "[{\"days\":\"Lunes\",\"hours\":\"09:00-17:00\"},{\"days\":\"Martes\",\"hours\":\"09:00-17:00\"}]", "type": "text"}
               ]
             },
             "url": {
@@ -289,7 +299,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["barbers"]
             },
-            "description": "Crea un nuevo barbero. Schedule es un array JSON con días y horarios."
+            "description": "Crea un nuevo barbero. Campos requeridos: name, email, password, phone. profilePicture es opcional (se sube a Cloudinary). Schedule es un array JSON con objetos {days: string, hours: string}. Status inicia en true."
           }
         },
         {
@@ -313,7 +323,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["barbers", "{{barberId}}"]
             },
-            "description": "Obtiene información detallada de un barbero específico"
+            "description": "Obtiene informaci├│n detallada de un barbero espec├¡fico"
           }
         },
         {
@@ -324,7 +334,10 @@
               "mode": "formdata",
               "formdata": [
                 {"key": "name", "value": "Carlos Actualizado", "type": "text"},
-                {"key": "schedule", "value": "[{\"days\":\"Martes\",\"hours\":\"10:00-18:00\"}]", "type": "text"}
+                {"key": "email", "value": "carlos.nuevo@example.com", "type": "text"},
+                {"key": "phone", "value": "+50233333333", "type": "text"},
+                {"key": "profilePicture", "type": "file", "src": ""},
+                {"key": "schedule", "value": "[{\"days\":\"Lunes\",\"hours\":\"10:00-18:00\"},{\"days\":\"Miercoles\",\"hours\":\"10:00-18:00\"}]", "type": "text"}
               ]
             },
             "url": {
@@ -332,7 +345,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["barbers", "{{barberId}}"]
             },
-            "description": "Actualiza datos de un barbero existente. Todos los campos son opcionales."
+            "description": "Actualiza datos de un barbero existente. Campos actualizables: name, email, phone, profilePicture (archivo), schedule. Todos opcionales. NO se puede actualizar password ni status."
           }
         },
         {
@@ -361,7 +374,7 @@
               "formdata": [
                 {"key": "clientId", "value": "{{clientId}}", "type": "text"},
                 {"key": "typeFavorite", "value": "PRODUCT", "type": "text"},
-                {"key": "referenceId", "value": "prod-123", "type": "text"}
+                {"key": "referenceId", "value": "{{productId}}", "type": "text"}
               ]
             },
             "url": {
@@ -369,7 +382,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["favorites"]
             },
-            "description": "Crea un favorito para un cliente. typeFavorite puede ser: PRODUCT, SERVICE, BARBER, HAIRCUT"
+            "description": "Crea un favorito para un cliente. typeFavorite puede ser: PRODUCT, SERVICE, BARBER, HAIRCUT. referenceId es el ID del objeto favorito. Índice único: cliente + tipo + referenceId (no puede haber duplicados)."
           }
         },
         {
@@ -389,7 +402,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/favorites?clientId={{clientId}}&typeFavorite=PRODUCT",
+              "raw": "{{baseUrl}}/favorites/{{clientId}}?typeFavorite=PRODUCT",
               "host": ["{{baseUrl}}"],
               "path": ["favorites"],
               "query": [
@@ -409,7 +422,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["favorites", "{{favoriteId}}"]
             },
-            "description": "Obtiene un favorito específico por su ID"
+            "description": "Obtiene un favorito espec├¡fico por su ID"
           }
         },
         {
@@ -419,7 +432,8 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "referenceId", "value": "prod-456", "type": "text"}
+                {"key": "typeFavorite", "value": "SERVICE", "type": "text"},
+                {"key": "referenceId", "value": "{{serviceId}}", "type": "text"}
               ]
             },
             "url": {
@@ -427,7 +441,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["favorites", "{{favoriteId}}"]
             },
-            "description": "Actualiza un favorito existente"
+            "description": "Actualiza un favorito existente. Campos actualizables: typeFavorite (PRODUCT, SERVICE, BARBER, HAIRCUT), referenceId. Todos opcionales. NO se puede cambiar clientId."
           }
         },
         {
@@ -457,7 +471,7 @@
                 {"key": "name", "value": "Fade", "type": "text"},
                 {"key": "description", "value": "Corte fade clásico", "type": "text"},
                 {"key": "faceTypeRecommended", "value": "OVALADO", "type": "text"},
-                {"key": "imageRef", "type": "file", "src": []}
+                {"key": "imageRef", "type": "file", "src": ""}
               ]
             },
             "url": {
@@ -465,7 +479,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "create"]
             },
-            "description": "Crea un nuevo tipo de corte con imagen de referencia"
+            "description": "Crea un nuevo tipo de corte con imagen de referencia. faceTypeRecommended valores: OVALADO, CUADRADO, REDONDO, CORAZÓN, CUALQUIERA, TRIANGULAR. imageRef se sube a Cloudinary."
           }
         },
         {
@@ -481,7 +495,7 @@
                 {"key": "page", "value": "1"}
               ]
             },
-            "description": "Obtiene todos los cortes con paginación"
+            "description": "Obtiene todos los cortes con paginaci├│n"
           }
         },
         {
@@ -493,7 +507,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "FaceType", "OVALADO"]
             },
-            "description": "Filtra cortes recomendados para un tipo de rostro específico"
+            "description": "Filtra cortes recomendados para un tipo de rostro espec├¡fico"
           }
         },
         {
@@ -517,7 +531,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "{{haircutId}}"]
             },
-            "description": "Obtiene un corte específico por su ID"
+            "description": "Obtiene un corte espec├¡fico por su ID"
           }
         },
         {
@@ -529,7 +543,8 @@
               "formdata": [
                 {"key": "name", "value": "Fade Moderno", "type": "text"},
                 {"key": "description", "value": "Descripción actualizada", "type": "text"},
-                {"key": "imageRef", "type": "file", "src": []}
+                {"key": "faceTypeRecommended", "value": "CUADRADO", "type": "text"},
+                {"key": "imageRef", "type": "file", "src": ""}
               ]
             },
             "url": {
@@ -537,7 +552,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["haircuts", "{{haircutId}}"]
             },
-            "description": "Actualiza un corte existente. Campos opcionales."
+            "description": "Actualiza un corte existente. Campos actualizables: name, description, faceTypeRecommended, imageRef. Todos opcionales. Valores válidos de faceTypeRecommended: OVALADO, CUADRADO, REDONDO, CORAZÓN, CUALQUIERA, TRIANGULAR."
           }
         },
         {
@@ -576,7 +591,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "create"]
             },
-            "description": "Crea una nueva cita. Status puede ser: PENDIENTE, CONFIRMADA, COMPLETADA, CANCELADA"
+            "description": "Crea una nueva cita. Campos requeridos: clienteId, barberId, serviceId, appointmentDate. Status inicial por defecto es PENDIENTE. Status válidos: PENDIENTE, COMPLETADA, CANCELADA. appointmentDate en formato ISO (2026-03-05T15:00:00.000Z)."
           }
         },
         {
@@ -600,7 +615,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "{{appointmentId}}"]
             },
-            "description": "Obtiene una cita específica por su ID"
+            "description": "Obtiene una cita espec├¡fica por su ID"
           }
         },
         {
@@ -612,7 +627,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "date", "2026-03-05"]
             },
-            "description": "Obtiene todas las citas para una fecha específica (formato: YYYY-MM-DD)"
+            "description": "Obtiene todas las citas para una fecha espec├¡fica (formato: YYYY-MM-DD)"
           }
         },
         {
@@ -624,7 +639,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "barber", "{{barberId}}"]
             },
-            "description": "Obtiene todas las citas de un barbero específico"
+            "description": "Obtiene todas las citas de un barbero espec├¡fico"
           }
         },
         {
@@ -636,7 +651,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "client", "{{clientId}}"]
             },
-            "description": "Obtiene todas las citas de un cliente específico"
+            "description": "Obtiene todas las citas de un cliente espec├¡fico"
           }
         },
         {
@@ -646,6 +661,9 @@
             "body": {
               "mode": "formdata",
               "formdata": [
+                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "barberId", "value": "{{barberId}}", "type": "text"},
+                {"key": "serviceId", "value": "{{serviceId}}", "type": "text"},
                 {"key": "appointmentDate", "value": "2026-03-05T16:00:00.000Z", "type": "text"},
                 {"key": "status", "value": "PENDIENTE", "type": "text"}
               ]
@@ -655,7 +673,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["appointments", "{{appointmentId}}"]
             },
-            "description": "Actualiza una cita existente. Campos opcionales."
+            "description": "Actualiza una cita existente. Campos actualizables: clienteId, barberId, serviceId, appointmentDate, status. Todos opcionales. Status válidos: PENDIENTE, COMPLETADA, CANCELADA."
           }
         },
         {
@@ -686,7 +704,7 @@
                 {"key": "saleType", "value": "LOCAL", "type": "text"},
                 {"key": "addressSale", "value": "Dirección venta", "type": "text"},
                 {"key": "saleDate", "value": "2026-03-03T10:00:00.000Z", "type": "text"},
-                {"key": "total", "value": "150.50", "type": "text"},
+                {"key": "detailId", "value": "[\"{{detailSaleId}}\"]", "type": "text"},
                 {"key": "paymentMethod", "value": "EFECTIVO", "type": "text"}
               ]
             },
@@ -695,7 +713,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "create"]
             },
-            "description": "Crea una nueva venta. saleType: LOCAL o DOMICILIO (requiere addressSale). paymentMethod: EFECTIVO, TARJETA, TRANSFERENCIA"
+            "description": "Crea una nueva venta. Campos requeridos: clientId, saleDate, detailId (array JSON de Detail IDs), paymentMethod. saleType: LOCAL o DOMICILIO (si es DOMICILIO, addressSale es requerido). paymentMethod: EFECTIVO o TARJETA. Total se calcula automáticamente. Status inicia en PENDIENTE."
           }
         },
         {
@@ -719,7 +737,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "my-sales"]
             },
-            "description": "Obtiene las ventas del usuario autenticado (requiere autenticación)"
+            "description": "Obtiene las ventas del usuario autenticado (requiere autenticaci├│n)"
           }
         },
         {
@@ -731,7 +749,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "{{saleId}}"]
             },
-            "description": "Obtiene una venta específica por su ID"
+            "description": "Obtiene una venta espec├¡fica por su ID"
           }
         },
         {
@@ -741,7 +759,10 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "total", "value": "200.00", "type": "text"},
+                {"key": "saleType", "value": "LOCAL", "type": "text"},
+                {"key": "addressSale", "value": "Nueva dirección", "type": "text"},
+                {"key": "detailId", "value": "[\"{{detailSaleId}}\"]", "type": "text"},
+                {"key": "paymentMethod", "value": "TARJETA", "type": "text"},
                 {"key": "status", "value": "COMPLETADO", "type": "text"}
               ]
             },
@@ -750,7 +771,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["sales", "{{saleId}}"]
             },
-            "description": "Actualiza una venta existente. Campos opcionales."
+            "description": "Actualiza una venta existente. Campos actualizables: saleType (LOCAL/DOMICILIO), addressSale, detailId (array JSON), paymentMethod (EFECTIVO/TARJETA), status (COMPLETADO/CANCELADO/PENDIENTE). Todos opcionales. Total se recalcula automáticamente cuando detailId cambia."
           }
         },
         {
@@ -777,10 +798,9 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "saleId", "value": "{{saleId}}", "type": "text"},
-                {"key": "productId", "value": "{{productId}}", "type": "text"},
-                {"key": "quantity", "value": "2", "type": "text"},
-                {"key": "total", "value": "50.00", "type": "text"}
+                {"key": "referenceId", "value": "{{productId}}", "type": "text"},
+                {"key": "detailType", "value": "PRODUCT", "type": "text"},
+                {"key": "quantity", "value": "2", "type": "text"}
               ]
             },
             "url": {
@@ -788,7 +808,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "create"]
             },
-            "description": "Crea un detalle de venta (producto vendido en una venta)"
+            "description": "Crea un detalle de venta (línea de producto o servicio en una venta). Campos requeridos: referenceId (ID del producto/servicio), detailType (SERVICE o PRODUCT), quantity. Total se calcula automáticamente según el precio de la referencia y cantidad."
           }
         },
         {
@@ -812,7 +832,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "{{detailSaleId}}"]
             },
-            "description": "Obtiene un detalle de venta específico por su ID"
+            "description": "Obtiene un detalle de venta espec├¡fico por su ID"
           }
         },
         {
@@ -824,7 +844,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "sale", "{{saleId}}"]
             },
-            "description": "Obtiene todos los detalles (productos) de una venta específica"
+            "description": "Obtiene todos los detalles (productos) de una venta espec├¡fica"
           }
         },
         {
@@ -834,8 +854,9 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "quantity", "value": "3", "type": "text"},
-                {"key": "total", "value": "75.00", "type": "text"}
+                {"key": "referenceId", "value": "{{productId}}", "type": "text"},
+                {"key": "detailType", "value": "PRODUCT", "type": "text"},
+                {"key": "quantity", "value": "3", "type": "text"}
               ]
             },
             "url": {
@@ -843,7 +864,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["detail-sales", "{{detailSaleId}}"]
             },
-            "description": "Actualiza un detalle de venta existente. Campos opcionales."
+            "description": "Actualiza un detalle de venta existente. Campos actualizables: referenceId (ID del producto/servicio), detailType (SERVICE/PRODUCT), quantity. Todos opcionales. Total se recalcula automáticamente."
           }
         },
         {
@@ -864,17 +885,17 @@
       "name": "Reviews",
       "item": [
         {
-          "name": "Create Review",
+          "name": "Create Review - Para Barbero",
           "request": {
             "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {"key": "clienteId", "value": "{{clientId}}", "type": "text"},
+                {"key": "clienteName", "value": "Juan Pérez", "type": "text"},
                 {"key": "barberoId", "value": "{{barberId}}", "type": "text"},
-                {"key": "servicioId", "value": "{{serviceId}}", "type": "text"},
                 {"key": "score", "value": "5", "type": "text"},
-                {"key": "comment", "value": "Excelente servicio y atención", "type": "text"}
+                {"key": "comment", "value": "Excelente corte de cabello, muy profesional y atento"}
               ]
             },
             "url": {
@@ -882,13 +903,36 @@
               "host": ["{{baseUrl}}"],
               "path": ["review", "crear"]
             },
-            "description": "Crea una nueva reseña. Score debe estar entre 1 y 5."
+            "description": "Crea una reseña para un BARBERO. Campos: clienteName (nombre cliente), barberoId (ID barbero), score (1-5), comment (10-500 caracteres)"
+          }
+        },
+        {
+          "name": "Create Review - Para Servicio",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "clienteName", "value": "María López", "type": "text"},
+                {"key": "servicioName", "value": "Corte de cabello", "type": "text"},
+                {"key": "score", "value": "4", "type": "text"},
+                {"key": "comment", "value": "Buen servicio en general, quedé satisfecha con el resultado"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/review/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["review", "crear"]
+            },
+            "description": "Crea una reseña para un SERVICIO. Campos: clienteName (nombre cliente), servicioName (nombre servicio), score (1-5), comment (10-500 caracteres)"
           }
         },
         {
           "name": "Get All Reviews",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/obtener",
               "host": ["{{baseUrl}}"],
@@ -901,17 +945,20 @@
           "name": "Get Review By ID",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/obtener/{{reviewId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "obtener", "{{reviewId}}"]
-            }
+            },
+            "description": "Obtiene una reseña específica por su ID"
           }
         },
         {
           "name": "Update Review",
           "request": {
             "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -923,24 +970,28 @@
               "raw": "{{baseUrl}}/review/actualizar/{{reviewId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "actualizar", "{{reviewId}}"]
-            }
+            },
+            "description": "Actualiza una reseña existente. Campos actualizables: score (1-5), comment. Ambos opcionales."
           }
         },
         {
           "name": "Delete Review",
           "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/eliminar/{{reviewId}}",
               "host": ["{{baseUrl}}"],
               "path": ["review", "eliminar", "{{reviewId}}"]
-            }
+            },
+            "description": "Elimina una reseña del sistema"
           }
         },
         {
           "name": "Get Reviews By Barbero",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/barbero/{{barberId}}",
               "host": ["{{baseUrl}}"],
@@ -953,6 +1004,7 @@
           "name": "Get Reviews By Cliente",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/cliente/{{clientId}}",
               "host": ["{{baseUrl}}"],
@@ -965,6 +1017,7 @@
           "name": "Get Reviews By Servicio",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/servicio/{{serviceId}}",
               "host": ["{{baseUrl}}"],
@@ -977,6 +1030,7 @@
           "name": "Get Average Score By Barbero",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/review/promedio/{{barberId}}",
               "host": ["{{baseUrl}}"],
@@ -985,107 +1039,130 @@
             "description": "Obtiene el promedio de calificación de un barbero"
           }
         }
-        
       ]
     },
-
     {
-      "name": "Crear Producto",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Hair Gel Strong Hold", "type": "text"},
+                {"key": "description", "value": "Long lasting shiny hair gel", "type": "text"},
+                {"key": "price", "value": "35", "type": "text"},
+                {"key": "stock", "value": "50", "type": "text"},
+                {"key": "category", "value": "GEL", "type": "text"},
+                {"key": "image", "type": "file", "src": ""},
+                {"key": "status", "value": "active", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "create"]
+            },
+            "description": "Crea un nuevo producto. Campos requeridos: name, description, price, stock, category. image es opcional (se sube a Cloudinary). status por defecto es 'active'. Categorías válidas: SHAMPOO, WAX, GEL, BEARD_OIL, MACHINES, ACCESSORIES."
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Hair Gel Strong Hold\",\n  \"description\": \"Long lasting shiny hair gel\",\n  \"price\": 35,\n  \"stock\": 50,\n  \"category\": \"GEL\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/create",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "create"]
-        }
-      }
-    },
-    {
-      "name": "Obtener Todos los Productos",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products"]
-        }
-      }
-    },
-    {
-      "name": "Obtener Producto por ID",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
-        }
-      }
-    },
-    {
-      "name": "Actualizar Producto",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Obtiene todos los productos registrados"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"price\": 40,\n  \"stock\": 60\n}"
         },
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Obtiene un producto específico por su ID"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "name", "value": "Hair Gel Premium", "type": "text"},
+                {"key": "description", "value": "Premium hair gel with extra hold", "type": "text"},
+                {"key": "price", "value": "40", "type": "text"},
+                {"key": "stock", "value": "60", "type": "text"},
+                {"key": "category", "value": "GEL", "type": "text"},
+                {"key": "image", "type": "file", "src": ""},
+                {"key": "status", "value": "active", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Actualiza un producto existente. Campos actualizables: name, description, price, stock, category, image (archivo), status (active/inactive). Todos opcionales."
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Elimina un producto del sistema"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Eliminar Producto",
-      "request": {
-        "method": "DELETE",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/products/{{productId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "products", "{{productId}}"]
+      "name": "Invoice",
+      "item": [
+        {
+          "name": "Download Invoice PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/invoice/pdf/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["invoice", "pdf", "{{saleId}}"]
+            },
+            "description": "Descarga la factura PDF para una venta específica. Si no existe factura, se crea automáticamente. Devuelve el archivo PDF como descarga. El nombre del archivo es invoiceNumber.pdf."
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Generar Factura PDF",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "http://localhost:3006/HaircutFiveFriends/api/v1/invoice/pdf/{{saleId}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3006",
-          "path": ["HaircutFiveFriends", "api", "v1", "invoice", "pdf", "{{saleId}}"]
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Generate Statistics Report PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/statistics/pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["statistics", "pdf"]
+            },
+            "description": "Genera un reporte PDF con estadísticas generales de ventas. Incluye resumen de ventas completadas, ingresos totales y detalle de todas las ventas. El archivo se descarga como statistics_report.pdf."
+          }
         }
-      }
+      ]
     },
     {
       "name": "Generar Estadísticas PDF",
@@ -1121,7 +1198,31 @@
           "port": "3006",
           "path": ["HaircutFiveFriends", "api", "v1", "sales", "{{saleId}}"]
         }
-      }
+      },
+      "name": "Complemetary Sales",
+      "item": [
+        {
+          "name": "Actualizar Sale a COMPLETADO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total\": 200,\n  \"status\": \"COMPLETADO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

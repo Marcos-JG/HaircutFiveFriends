@@ -3,83 +3,123 @@
 import { body, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 
-// Validaciones para crear reseña
-export const validateCreateReview = [
-    body('clienteId')
-        .trim()
-        .notEmpty().withMessage('El ID del cliente es requerido')
-        .custom((value) => {
-            if (!mongoose.Types.ObjectId.isValid(value)) {
-                throw new Error('El ID del cliente no es válido');
-            }
-            return true;
-        }),
+// ============ VALIDADORES SIMPLIFICADOS ============
+// Cliente: solo NOMBRE
+// Barbero: solo ID  
+// Servicio: solo NOMBRE
 
-    body('barberoId')
-        .trim()
-        .notEmpty().withMessage('El ID del barbero es requerido')
-        .custom((value) => {
-            if (!mongoose.Types.ObjectId.isValid(value)) {
-                throw new Error('El ID del barbero no es válido');
-            }
-            return true;
-        }),
+// Middleware para validar CREATE REVIEW
+export const validateCreateReview = async (req, res, next) => {
+    try {
+        // Validar campos requeridos
+        const { clienteName, barberoId, servicioName, score, comment } = req.body || {};
 
-    body('servicioId')
-        .trim()
-        .notEmpty().withMessage('El ID del servicio es requerido')
-        .custom((value) => {
-            if (!mongoose.Types.ObjectId.isValid(value)) {
-                throw new Error('El ID del servicio no es válido');
-            }
-            return true;
-        }),
-
-    body('score')
-        .notEmpty().withMessage('La puntuación es requerida')
-        .isInt({ min: 1, max: 5 }).withMessage('La puntuación debe ser un número entero entre 1 y 5'),
-
-    body('comment')
-        .trim()
-        .notEmpty().withMessage('El comentario es requerido')
-        .isLength({ min: 10 }).withMessage('El comentario debe tener al menos 10 caracteres')
-        .isLength({ max: 500 }).withMessage('El comentario no puede exceder los 500 caracteres'),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        // Validar cliente nombre
+        if (!clienteName || !clienteName.trim()) {
             return res.status(400).json({
                 success: false,
-                message: 'Errores de validación',
-                errors: errors.array()
+                message: 'El nombre del cliente es requerido'
             });
         }
-        next();
-    }
-];
 
-// Validaciones para actualizar reseña
-export const validateUpdateReview = [
-    body('score')
-        .optional()
-        .isInt({ min: 1, max: 5 }).withMessage('La puntuación debe ser un número entero entre 1 y 5'),
-
-    body('comment')
-        .optional()
-        .trim()
-        .notEmpty().withMessage('El comentario no puede estar vacío')
-        .isLength({ min: 10 }).withMessage('El comentario debe tener al menos 10 caracteres')
-        .isLength({ max: 500 }).withMessage('El comentario no puede exceder los 500 caracteres'),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        // Validar barbero XOR servicio
+        if (!barberoId && !servicioName) {
             return res.status(400).json({
                 success: false,
-                message: 'Errores de validación',
-                errors: errors.array()
+                message: 'Debe proporcionar barberoId O servicioName (uno de los dos)'
             });
         }
+
+        if (barberoId && servicioName) {
+            return res.status(400).json({
+                success: false,
+                message: 'Solo puede calificar un barbero O un servicio, no ambos'
+            });
+        }
+
+        // Validar score
+        if (!score) {
+            return res.status(400).json({
+                success: false,
+                message: 'La puntuación es requerida'
+            });
+        }
+
+        const scoreNum = parseInt(score, 10);
+        if (isNaN(scoreNum) || scoreNum < 1 || scoreNum > 5) {
+            return res.status(400).json({
+                success: false,
+                message: 'La puntuación debe estar entre 1 y 5'
+            });
+        }
+
+        // Validar comentario
+        if (!comment) {
+            return res.status(400).json({
+                success: false,
+                message: 'El comentario es requerido'
+            });
+        }
+
+        const commentTrimmed = comment.trim();
+        if (commentTrimmed.length < 10 || commentTrimmed.length > 500) {
+            return res.status(400).json({
+                success: false,
+                message: 'El comentario debe tener entre 10 y 500 caracteres'
+            });
+        }
+
+        // Validar barberoId si se proporciona
+        if (barberoId && !mongoose.Types.ObjectId.isValid(barberoId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El ID del barbero no es válido'
+            });
+        }
+
+        // Si todas las validaciones pasaron
         next();
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error en validación: ' + error.message
+        });
     }
-];
+};
+
+// Middleware para validar UPDATE REVIEW
+export const validateUpdateReview = async (req, res, next) => {
+    try {
+        const { score, comment } = req.body || {};
+
+        // Validar score si se proporciona
+        if (score) {
+            const scoreNum = parseInt(score, 10);
+            if (isNaN(scoreNum) || scoreNum < 1 || scoreNum > 5) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La puntuación debe estar entre 1 y 5'
+                });
+            }
+        }
+
+        // Validar comentario si se proporciona
+        if (comment) {
+            const commentTrimmed = comment.trim();
+            if (commentTrimmed.length < 10 || commentTrimmed.length > 500) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El comentario debe tener entre 10 y 500 caracteres'
+                });
+            }
+        }
+
+        // Si todas las validaciones pasaron
+        next();
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error en validación: ' + error.message
+        });
+    }
+};

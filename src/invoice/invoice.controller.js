@@ -4,6 +4,8 @@ import Invoice from './invoice.model.js'
 import generateInvoicePDF from './invoice.pdf.js'
 import Sale from '../sale/sale.model.js'
 import Detail from '../detailSale/detail.model.js'
+import Service from '../service/service.model.js'
+import Product from '../product/product.model.js'
 
 export const downloadInvoice = async (req, res) => {
     try {
@@ -22,9 +24,8 @@ export const downloadInvoice = async (req, res) => {
         }
 
         // 2️⃣ Buscar detalles de la venta
-        const details = await Detail.find({ saleId })
-            .populate('productId')
-            
+        const detailIds = Array.isArray(sale.detailId) ? sale.detailId : (sale.detailId ? [sale.detailId] : [])
+        const details = await Detail.find({ _id: { $in: detailIds } })
 
         if (!details || details.length === 0) {
             return res.status(404).json({
@@ -32,6 +33,22 @@ export const downloadInvoice = async (req, res) => {
                 message: 'Sale details not found'
             })
         }
+
+        const enrichedDetails = await Promise.all(
+            details.map(async (detail) => {
+                if (detail.detailType === 'SERVICE') {
+                    const service = await Service.findById(detail.referenceId).select('name price')
+                    return { ...detail.toObject(), productId: service }
+                }
+
+                if (detail.detailType === 'PRODUCT') {
+                    const product = await Product.findById(detail.referenceId).select('name price')
+                    return { ...detail.toObject(), productId: product }
+                }
+
+                return detail.toObject()
+            })
+        )
 
         // 3️⃣ Verificar si ya existe factura para esa venta
         let invoice = await Invoice.findOne({ saleId })
@@ -55,7 +72,7 @@ export const downloadInvoice = async (req, res) => {
         const pdfBuffer = await generateInvoicePDF({
             invoice,
             sale,
-            details
+            details: enrichedDetails
         })
 
         // 5️⃣ Enviar PDF como descarga

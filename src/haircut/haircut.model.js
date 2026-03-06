@@ -1,5 +1,4 @@
 'use strict';
-import e from 'cors';
 import mongoose from 'mongoose';
 
 const haircutSchema = new mongoose.Schema({

@@ -12,12 +12,12 @@ const reviewSchema = mongoose.Schema(
         barberoId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Barber',
-            required: [true, 'El ID del barbero es obligatorio']
+            required: false
         },
         servicioId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Service',
-            required: [true, 'El ID del servicio es obligatorio']
+            required: false
         },
         score:{
             type: Number,
@@ -38,5 +38,19 @@ const reviewSchema = mongoose.Schema(
         versionKey: false
     }
 );
+
+// Validación personalizada: debe calificar barbero O servicio, no ambos ni ninguno
+reviewSchema.pre('save', function () {
+    const hasBarbero = this.barberoId != null;
+    const hasServicio = this.servicioId != null;
+
+    if (!hasBarbero && !hasServicio) {
+        throw new Error('Debe calificar un barbero o un servicio');
+    }
+
+    if (hasBarbero && hasServicio) {
+        throw new Error('Solo puede calificar un barbero O un servicio, no ambos');
+    }
+});
 
 export default mongoose.model('Review', reviewSchema)

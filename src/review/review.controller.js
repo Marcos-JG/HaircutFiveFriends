@@ -2,20 +2,61 @@
 
 import mongoose from 'mongoose';
 import Review from './review.model.js';
+import Client from '../client/client.model.js';
+import Barber from '../barber/barber.model.js';
+import Service from '../service/service.model.js';
 
 // Crear una nueva reseña
 export const createReview = async (req, res)=>{
     try {
-        const { clienteId, barberoId, servicioId, score, comment } = req.body;
+        let { clienteName, barberoId, servicioName, score, comment } = req.body;
 
-        if (!clienteId || !barberoId || !servicioId || !score || !comment) {
+        // Obtener el ID del cliente usando el nombre
+        if (!clienteName) {
             return res.status(400).json({
                 success: false,
-                message: 'Por favor complete todos los campos requeridos'
+                message: 'El nombre del cliente es requerido'
             });
         }
 
-        const review = new Review(req.body);
+        const client = await Client.findOne({ name: clienteName });
+        if (!client) {
+            return res.status(404).json({
+                success: false,
+                message: `Cliente con nombre "${clienteName}" no encontrado`
+            });
+        }
+        const clienteId = client._id;
+
+        // Obtener el ID del servicio si se proporcionó nombre
+        let servicioId = null;
+        if (servicioName) {
+            const service = await Service.findOne({ name: servicioName });
+            if (!service) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Servicio con nombre "${servicioName}" no encontrado`
+                });
+            }
+            servicioId = service._id;
+        }
+
+        // Crear la reseña con los datos obtenidos
+        const reviewData = {
+            clienteId,
+            score,
+            comment
+        };
+
+        if (barberoId) {
+            reviewData.barberoId = barberoId;
+        }
+
+        if (servicioId) {
+            reviewData.servicioId = servicioId;
+        }
+
+        const review = new Review(reviewData);
         await review.save();
         
         res.status(201).json({
@@ -144,7 +185,16 @@ export const deleteReview = async (req, res) => {
 export const getReviewsByBarbero = async (req, res) => {
     try {
         const { barberoId } = req.params;
-        const reviews = await Review.find({ barberoId })
+        
+        // Validar que sea un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(barberoId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El ID del barbero no es válido'
+            });
+        }
+
+        const reviews = await Review.find({ barberoId: barberoId })
             .populate('clienteId', 'name email')
             .populate('servicioId', 'name price');
 
@@ -165,7 +215,16 @@ export const getReviewsByBarbero = async (req, res) => {
 export const getReviewsByCliente = async (req, res) => {
     try {
         const { clienteId } = req.params;
-        const reviews = await Review.find({ clienteId })
+        
+        // Validar que sea un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(clienteId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El ID del cliente no es válido'
+            });
+        }
+
+        const reviews = await Review.find({ clienteId: clienteId })
             .populate('barberoId', 'name')
             .populate('servicioId', 'name price');
 
@@ -186,7 +245,16 @@ export const getReviewsByCliente = async (req, res) => {
 export const getReviewsByServicio = async (req, res) => {
     try {
         const { servicioId } = req.params;
-        const reviews = await Review.find({ servicioId })
+        
+        // Validar que sea un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(servicioId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El ID del servicio no es válido'
+            });
+        }
+
+        const reviews = await Review.find({ servicioId: servicioId })
             .populate('clienteId', 'name email')
             .populate('barberoId', 'name');
 
@@ -207,8 +275,16 @@ export const getReviewsByServicio = async (req, res) => {
 export const getAverageScoreByBarbero = async (req, res) => {
     try {
         const { barberoId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(barberoId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El ID del barbero no es válido'
+            });
+        }
+
         const result = await Review.aggregate([
-            { $match: { barberoId: mongoose.Types.ObjectId(barberoId) } },
+            { $match: { barberoId: new mongoose.Types.ObjectId(barberoId) } },
             {
                 $group: {
                     _id: '$barberoId',
@@ -225,15 +301,21 @@ export const getAverageScoreByBarbero = async (req, res) => {
             });
         }
 
+        // Obtener el nombre del barbero
+        const barber = await Barber.findById(result[0]._id).select('name');
+        const barberName = barber ? barber.name : 'Desconocido';
+
         res.status(200).json({
             success: true,
             message: 'Promedio calculado exitosamente',
             data: {
                 barberoId: result[0]._id,
+                barberName: barberName,
                 averageScore: result[0].averageScore.toFixed(2),
                 totalReviews: result[0].totalReviews
             }
         });
+
     } catch (error) {
         res.status(500).json({
             success: false,
