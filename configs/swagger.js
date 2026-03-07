@@ -30,7 +30,9 @@ const options = {
             { name: 'Reviews', description: 'Gestión de reseñas' },
             { name: 'Sales', description: 'Gestión de ventas' },
             { name: 'DetailSales', description: 'Gestión de detalle de ventas' },
-            { name: 'Products', description: 'Gestión de productos' }
+            { name: 'Products', description: 'Gestión de productos' },
+            { name: 'Invoice', description: 'Generación de facturas PDF' },
+            { name: 'Statistics', description: 'Generación de reportes estadísticos' }
         ],
         paths: {
             '/Health': {
@@ -844,7 +846,7 @@ const options = {
                                         addressSale: { type: 'string', example: 'Calle Principal 123' },
                                         saleDate: { type: 'string', format: 'date-time' },
                                         total: { type: 'number', example: 150.50 },
-                                        paymentMethod: { type: 'string', enum: ['TARJETA_CREDITO/DEBITO', 'EFECTIVO', 'DEPOSITO_MOVIL'], example: 'EFECTIVO' },
+                                        paymentMethod: { type: 'string', enum: ["TARJETA", "EFECTIVO"], example: 'EFECTIVO' },
                                         status: { type: 'string', enum: ['COMPLETADO', 'CANCELADO', 'PENDIENTE'] }
                                     },
                                     required: ['clientId', 'saleDate', 'total', 'paymentMethod']
@@ -907,7 +909,7 @@ const options = {
                                         addressSale: { type: 'string' },
                                         saleDate: { type: 'string', format: 'date-time' },
                                         total: { type: 'number' },
-                                        paymentMethod: { type: 'string', enum: ['TARJETA_CREDITO/DEBITO', 'EFECTIVO', 'DEPOSITO_MOVIL'] },
+                                        paymentMethod: { type: 'string', enum: ['TARJETA', 'EFECTIVO'] },
                                         status: { type: 'string', enum: ['COMPLETADO', 'CANCELADO', 'PENDIENTE'] }
                                     }
                                 }
@@ -1129,6 +1131,60 @@ const options = {
                     summary: 'Eliminar producto',
                     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
                     responses: { 200: { description: 'Producto eliminado' } }
+                }
+            },
+
+            '/invoice/pdf/{saleId}': {
+                get: {
+                    tags: ['Invoice'],
+                    summary: 'Descargar factura en PDF',
+                    description: 'Genera y descarga la factura en formato PDF para una venta específica',
+                    parameters: [
+                        { 
+                            name: 'saleId', 
+                            in: 'path', 
+                            required: true, 
+                            schema: { type: 'string' },
+                            description: 'ID de la venta'
+                        }
+                    ],
+                    responses: {
+                        200: {
+                            description: 'Factura PDF generada exitosamente',
+                            content: {
+                                'application/pdf': {
+                                    schema: {
+                                        type: 'string',
+                                        format: 'binary'
+                                    }
+                                }
+                            }
+                        },
+                        404: { description: 'Venta no encontrada' },
+                        500: { description: 'Error al generar la factura' }
+                    }
+                }
+            },
+
+            '/statistics/pdf': {
+                get: {
+                    tags: ['Statistics'],
+                    summary: 'Generar reporte de estadísticas en PDF',
+                    description: 'Genera un reporte completo de estadísticas de ventas, servicios y barberos en formato PDF',
+                    responses: {
+                        200: {
+                            description: 'Reporte PDF generado exitosamente',
+                            content: {
+                                'application/pdf': {
+                                    schema: {
+                                        type: 'string',
+                                        format: 'binary'
+                                    }
+                                }
+                            }
+                        },
+                        500: { description: 'Error al generar el reporte' }
+                    }
                 }
             }
         }

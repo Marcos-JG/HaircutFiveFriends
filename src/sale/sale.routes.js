@@ -22,7 +22,7 @@ router.get('/my-sales', getMySales)
 
 router.get('/', getSales)
 
-router.put('/:id', uploadProfilePicture.none(), updateSale)
+router.put('/:id', uploadProfilePicture.none(), requireAddressForDomicilio, updateSale)
 
 router.put('/:id/details', uploadProfilePicture.none(), addDetailsToSale)
 

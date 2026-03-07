@@ -60,7 +60,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/invoice`, invoiceRoutes);
     app.use(`${BASE_PATH}/statistics`, statisticsRoutes);
     app.use(`${BASE_PATH}/products`, productRoutes)
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     app.use((req, res) => {
         res.status(404).json({

@@ -72,6 +72,10 @@ export const downloadInvoice = async (req, res) => {
                 status: 'PAID'
             })
         }
+        if (sale.status !== 'COMPLETADO') {
+            sale.status = 'COMPLETADO'
+            await sale.save()
+        }
 
         // 4️⃣ Generar PDF
         const pdfBuffer = await generateInvoicePDF({

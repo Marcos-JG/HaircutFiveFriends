@@ -105,9 +105,9 @@ export const createSale = async (req, res) => {
 
                     if (usePoints) {
                         if (!service.pointsPrice || service.pointsPrice <= 0) {
-                            return res.status(400).json({ 
-                                success: false, 
-                                message: `El servicio "${service.name || 'desconocido'}" no tiene precio en puntos definido` 
+                            return res.status(400).json({
+                                success: false,
+                                message: `El servicio "${service.name || 'desconocido'}" no tiene precio en puntos definido`
                             })
                         }
                         totalPointsNeeded += Number(service.pointsPrice) * quantity
@@ -130,9 +130,9 @@ export const createSale = async (req, res) => {
 
                     if (usePoints) {
                         if (!product.pointsPrice || product.pointsPrice <= 0) {
-                            return res.status(400).json({ 
-                                success: false, 
-                                message: `El producto "${product.name || 'desconocido'}" no tiene precio en puntos definido` 
+                            return res.status(400).json({
+                                success: false,
+                                message: `El producto "${product.name || 'desconocido'}" no tiene precio en puntos definido`
                             })
                         }
                         totalPointsNeeded += Number(product.pointsPrice) * quantity
@@ -154,9 +154,9 @@ export const createSale = async (req, res) => {
 
             // Verificar que el cliente tenga suficientes puntos
             if (totalPointsNeeded > 0 && client.points < totalPointsNeeded) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: `Puntos insuficientes. Necesitas ${totalPointsNeeded} puntos pero solo tienes ${client.points}` 
+                return res.status(400).json({
+                    success: false,
+                    message: `Puntos insuficientes. Necesitas ${totalPointsNeeded} puntos pero solo tienes ${client.points}`
                 })
             }
 
@@ -180,7 +180,7 @@ export const createSale = async (req, res) => {
 
         // Solo dar puntos por el monto pagado en dinero, no por items canjeados
         const pointsToAdd = Number((moneyTotal * 0.1).toFixed(2))
-        
+
         if (totalPointsNeeded > 0) {
             saleData.pointsMessage = `Canjeaste ${totalPointsNeeded} puntos. `
             if (pointsToAdd > 0) {
@@ -400,5 +400,3 @@ export const deleteSale = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Error deleting sale', err })
     }
 }
-
-
