@@ -25,6 +25,7 @@ import productRoutes from '../src/product/product.routes.js';
 
 // ── AI Haircut (integrado desde The5FadeFriends) ──────────────────────────────
 import aiHaircutRoutes from '../src/aiHaircut/aiHaircut.routes.js';
+import aiHaircutImageRoutes from '../src/aiHaircutImage/image.routes.js';
 
 const BASE_PATH = '/HaircutFiveFriends/api/v1';
 
@@ -61,6 +62,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/products`,      productRoutes);
 
     app.use(`${BASE_PATH}/ai-haircut`,    aiHaircutRoutes);
+    app.use(`${BASE_PATH}/ai-haircut-image`, aiHaircutImageRoutes);
 
     // ── Swagger ───────────────────────────────────────────────────────────────
     app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));

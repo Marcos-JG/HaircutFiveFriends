@@ -32,7 +32,9 @@ const options = {
             { name: 'DetailSales', description: 'Gestión de detalle de ventas' },
             { name: 'Products', description: 'Gestión de productos' },
             { name: 'Invoice', description: 'Generación de facturas PDF' },
-            { name: 'Statistics', description: 'Generación de reportes estadísticos' }
+            { name: 'Statistics', description: 'Generación de reportes estadísticos' },
+            { name: 'AI Haircut', description: 'Generación de cortes con IA' },
+            { name: 'AI Haircut Image', description: 'Utilidades de imagen base64 para IA' }
         ],
         paths: {
             '/Health': {
@@ -1184,6 +1186,179 @@ const options = {
                             }
                         },
                         500: { description: 'Error al generar el reporte' }
+                    }
+                }
+            },
+
+            '/ai-haircut/analyze': {
+                post: {
+                    tags: ['AI Haircut'],
+                    summary: 'Analizar rostro y generar corte con IA',
+                    description: 'Envía una foto (archivo o base64) y devuelve resumen del rostro y una imagen con el corte solicitado.',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'multipart/form-data': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        image: { type: 'string', format: 'binary', description: 'Foto del cliente (alternativa a imageBase64)' },
+                                        imageBase64: { type: 'string', description: 'Foto en base64 si no envías archivo' },
+                                        mimeType: { type: 'string', example: 'image/jpeg' },
+                                        haircutName: { type: 'string', example: 'fade' },
+                                        description: { type: 'string', example: 'borde limpio, look moderno' },
+                                        length: { type: 'string', enum: ['short', 'medium', 'long'], example: 'short' },
+                                        style: { type: 'string', enum: ['classic', 'modern', 'urban'], example: 'modern' }
+                                    }
+                                }
+                            },
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        imageBase64: { type: 'string', description: 'Foto en base64' },
+                                        mimeType: { type: 'string', example: 'image/jpeg' },
+                                        haircutName: { type: 'string', example: 'fade' },
+                                        description: { type: 'string', example: 'borde limpio, look moderno' },
+                                        length: { type: 'string', enum: ['short', 'medium', 'long'], example: 'short' },
+                                        style: { type: 'string', enum: ['classic', 'modern', 'urban'], example: 'modern' }
+                                    },
+                                    required: ['imageBase64']
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: {
+                            description: 'Análisis y propuesta de corte generados',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            faceSummary: { type: 'string', example: 'Rostro ovalado, cabello lacio oscuro...' },
+                                            haircutImageBase64: { type: 'string', description: 'Imagen editada en base64' },
+                                            haircutParams: {
+                                                type: 'object',
+                                                properties: {
+                                                    haircutName: { type: 'string' },
+                                                    description: { type: 'string' },
+                                                    length: { type: 'string' },
+                                                    style: { type: 'string' }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        400: { description: 'Solicitud inválida (sin imagen o base64 inválido)' },
+                        500: { description: 'Error al procesar la imagen' }
+                    }
+                }
+            },
+
+            '/ai-haircut-image/preview': {
+                post: {
+                    tags: ['AI Haircut Image'],
+                    summary: 'Previsualizar imagen base64',
+                    description: 'Devuelve la imagen decodificada desde base64 (útil para probar render).',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        imageBase64: { type: 'string', description: 'Imagen en base64' },
+                                        mimeType: { type: 'string', example: 'image/png' }
+                                    },
+                                    required: ['imageBase64']
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: {
+                            description: 'Imagen devuelta en binario con el mimeType indicado',
+                            content: {
+                                '*/*': {
+                                    schema: {
+                                        type: 'string',
+                                        format: 'binary'
+                                    }
+                                }
+                            }
+                        },
+                        400: { description: 'Falta imageBase64' }
+                    }
+                }
+            },
+
+            '/ai-haircut-image/save': {
+                post: {
+                    tags: ['AI Haircut Image'],
+                    summary: 'Guardar imágenes base64 en /tmp',
+                    description: 'Acepta una o varias imágenes base64 y devuelve las rutas locales temporales.',
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        // modo múltiple
+                                        images: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    imageBase64: { type: 'string' },
+                                                    mimeType: { type: 'string', example: 'image/png' },
+                                                    filename: { type: 'string', example: 'img1.png' }
+                                                },
+                                                required: ['imageBase64']
+                                            }
+                                        },
+                                        // modo legacy (single)
+                                        imageBase64: { type: 'string', description: 'Usar cuando no se envía array images' },
+                                        mimeType: { type: 'string', example: 'image/png' },
+                                        filename: { type: 'string', example: 'preview.png' }
+                                    },
+                                    oneOf: [
+                                        { required: ['images'] },
+                                        { required: ['imageBase64'] }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        201: {
+                            description: 'Imágenes guardadas',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            files: {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        filePath: { type: 'string' },
+                                                        mimeType: { type: 'string' },
+                                                        filename: { type: 'string' }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        400: { description: 'Solicitud inválida (array vacío o sin imageBase64)' }
                     }
                 }
             }

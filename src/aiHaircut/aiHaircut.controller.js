@@ -2,6 +2,13 @@
 
 import { describeFace, proposeHaircutImage } from "../../services/genaiService.js";
 
+const FALLBACK_MIME = "image/jpeg";
+
+function normalizeMimeType(mime) {
+  if (!mime || mime === "application/octet-stream") return FALLBACK_MIME;
+  return mime;
+}
+
 function sanitizeBase64(b64) {
   if (!b64) return b64;
   const idx = b64.indexOf(",");
@@ -47,7 +54,7 @@ export async function analyzeFace(req, res, next) {
     const resolvedImageBase64 = file
       ? file.buffer.toString("base64")
       : imageBase64;
-    const resolvedMimeType = file ? file.mimetype : mimeType;
+    const resolvedMimeType = normalizeMimeType(file ? file.mimetype : mimeType);
 
     const cleanBase64 = resolvedImageBase64
       ? sanitizeBase64(resolvedImageBase64)

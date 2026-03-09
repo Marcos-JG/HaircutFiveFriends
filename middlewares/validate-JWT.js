@@ -38,6 +38,8 @@ export const validateJWT = (req, res, next) => {
             audience: process.env.JWT_AUDIENCE,
         });
 
+        console.log('JWT payload:', decoded);
+
         req.auth = {
             ...decoded,
             userId: decoded.sub,
@@ -88,11 +90,21 @@ export const requireClientFromToken = (req, res, next) => {
 
 export const ensureClientMatchesToken = async (req, res, next) => {
     try {
-        const { email: tokenEmail, password: tokenPassword, profilePicture: tokenProfile } = req.auth || {};
+        const tokenEmail = req.auth?.email || req.auth?.Email || req.auth?.User?.Email || req.auth?.user?.Email;
+        const tokenPassword = req.auth?.password || req.auth?.Password || req.auth?.User?.Password || req.auth?.user?.Password;
+        const tokenProfile = req.auth?.profilePicture || req.auth?.ProfilePicture || req.auth?.Imagen || req.auth?.User?.Imagen || req.auth?.user?.Imagen;
 
         const bodyEmail = req.body?.email;
         const bodyPassword = req.body?.password;
         const bodyProfile = req.file?.path || req.body?.profilePicture;
+
+        if (!tokenEmail) {
+            await cleanUploadedFile(req);
+            return res.status(401).json({
+                success: false,
+                message: 'El token debe incluir email para crear el cliente',
+            });
+        }
 
         if (!bodyEmail || !bodyPassword) {
             await cleanUploadedFile(req);
@@ -102,7 +114,8 @@ export const ensureClientMatchesToken = async (req, res, next) => {
             });
         }
 
-        if (tokenEmail && bodyEmail !== tokenEmail) {
+        const emailsMatch = tokenEmail.toLowerCase() === bodyEmail.toLowerCase();
+        if (!emailsMatch) {
             await cleanUploadedFile(req);
             return res.status(401).json({
                 success: false,
@@ -110,7 +123,8 @@ export const ensureClientMatchesToken = async (req, res, next) => {
             });
         }
 
-        if (tokenPassword && bodyPassword !== tokenPassword) {
+        const isHash = typeof tokenPassword === 'string' && tokenPassword.startsWith('$');
+        if (tokenPassword && !isHash && bodyPassword !== tokenPassword) {
             await cleanUploadedFile(req);
             return res.status(401).json({
                 success: false,
@@ -118,9 +132,13 @@ export const ensureClientMatchesToken = async (req, res, next) => {
             });
         }
 
-        const tokenHasCustomProfile = tokenProfile && tokenProfile !== DEFAULT_AVATAR_URL;
+        const tokenProfileResolved = tokenProfile && !tokenProfile.startsWith('http')
+            ? `${process.env.CLOUDINARY_BASE_URL || 'https://res.cloudinary.com/djuxr89ny/image/upload/'}${tokenProfile}`
+            : tokenProfile;
+
+        const tokenHasCustomProfile = tokenProfileResolved && tokenProfileResolved !== DEFAULT_AVATAR_URL;
         if (tokenHasCustomProfile) {
-            if (!bodyProfile || bodyProfile !== tokenProfile) {
+            if (!bodyProfile || bodyProfile !== tokenProfileResolved) {
                 await cleanUploadedFile(req);
                 return res.status(401).json({
                     success: false,

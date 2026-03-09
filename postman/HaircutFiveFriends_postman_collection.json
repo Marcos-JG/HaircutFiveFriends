@@ -7,6 +7,11 @@
   },
   "variable": [
     {
+      "key": "authToken",
+      "value": "REEMPLAZAR_JWT",
+      "type": "string"
+    },
+    {
       "key": "baseUrl",
       "value": "http://localhost:3006/HaircutFiveFriends/api/v1",
       "type": "string"
@@ -72,6 +77,16 @@
       "type": "string"
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
   "item": [
     {
       "name": "Health",
@@ -856,7 +871,7 @@
                 }
               ]
             },
-            "description": "Obtiene todos los cortes con paginaci├│n"
+            "description": "Obtiene todos los cortes con paginación"
           }
         },
         {
@@ -874,7 +889,7 @@
                 "OVALADO"
               ]
             },
-            "description": "Filtra cortes recomendados para un tipo de rostro espec├¡fico"
+            "description": "Filtra cortes recomendados para un tipo de rostro específico"
           }
         },
         {
@@ -909,7 +924,7 @@
                 "{{haircutId}}"
               ]
             },
-            "description": "Obtiene un corte espec├¡fico por su ID"
+            "description": "Obtiene un corte específico por su ID"
           }
         },
         {
@@ -969,6 +984,65 @@
               ]
             },
             "description": "Elimina un corte del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Haircut Image",
+      "item": [
+        {
+          "name": "Preview Base64 Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageBase64\": \"<pegue_base64_aqui>\",\n  \"mimeType\": \"image/png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai-haircut-image/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-haircut-image",
+                "preview"
+              ]
+            },
+            "description": "Devuelve la imagen decodificada desde base64 (útil para probar render)."
+          }
+        },
+        {
+          "name": "Save Multiple Base64 Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"images\": [\n    { \"imageBase64\": \"<base64_img_1>\", \"mimeType\": \"image/png\", \"filename\": \"img1.png\" },\n    { \"imageBase64\": \"<base64_img_2>\", \"mimeType\": \"image/jpeg\", \"filename\": \"img2.jpg\" }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai-haircut-image/save",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-haircut-image",
+                "save"
+              ]
+            },
+            "description": "Guarda varias imágenes base64 en /tmp y devuelve la lista de rutas locales."
           }
         }
       ]

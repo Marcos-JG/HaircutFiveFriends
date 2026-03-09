@@ -16,4 +16,22 @@ export class Base64ImageService {
     await fs.writeFile(filePath, buffer);
     return { filePath, mimeType };
   }
+
+  static async saveManyToTemp(images = []) {
+    if (!Array.isArray(images) || images.length === 0) {
+      throw new Error("Se requiere al menos una imagen para guardar");
+    }
+
+    const results = [];
+    for (const image of images) {
+      const { imageBase64, base64, mimeType = "image/png", filename = "image.png" } = image || {};
+      const selectedBase64 = imageBase64 || base64;
+      if (!selectedBase64) {
+        throw new Error("Cada imagen debe incluir imageBase64");
+      }
+      const { filePath } = await this.saveToTemp({ base64: selectedBase64, mimeType, filename });
+      results.push({ filePath, mimeType, filename });
+    }
+    return results;
+  }
 }
