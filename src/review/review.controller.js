@@ -11,19 +11,23 @@ export const createReview = async (req, res)=>{
     try {
         let { clienteName, barberoId, servicioName, score, comment } = req.body;
 
-        // Obtener el ID del cliente usando el nombre
-        if (!clienteName) {
-            return res.status(400).json({
-                success: false,
-                message: 'El nombre del cliente es requerido'
-            });
+        const clientFromToken = req.clientFromToken;
+        let client = clientFromToken;
+
+        if (!client) {
+            if (!clienteName) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El nombre del cliente es requerido'
+                });
+            }
+            client = await Client.findOne({ name: clienteName });
         }
 
-        const client = await Client.findOne({ name: clienteName });
         if (!client) {
             return res.status(404).json({
                 success: false,
-                message: `Cliente con nombre "${clienteName}" no encontrado`
+                message: 'Cliente no encontrado para crear la reseña'
             });
         }
         const clienteId = client._id;
@@ -137,6 +141,15 @@ export const updateReview = async (req, res) => {
             });
         }
 
+        if (req.userRole === 'USER_ROLE') {
+            if (!req.clientFromToken) {
+                return res.status(404).json({ success: false, message: 'Cliente no encontrado para el usuario autenticado' });
+            }
+            if (String(review.clienteId) !== String(req.clientFromToken._id)) {
+                return res.status(403).json({ success: false, message: 'Solo puedes editar tu propia reseña' });
+            }
+        }
+
         if (score !== undefined) review.score = score;
         if (comment) review.comment = comment;
 
@@ -159,7 +172,7 @@ export const updateReview = async (req, res) => {
 export const deleteReview = async (req, res) => {
     try {
         const { id } = req.params;
-        const review = await Review.findByIdAndDelete(id);
+        const review = await Review.findById(id);
 
         if (!review) {
             return res.status(404).json({
@@ -167,6 +180,17 @@ export const deleteReview = async (req, res) => {
                 message: 'Reseña no encontrada'
             });
         }
+
+        if (req.userRole === 'USER_ROLE') {
+            if (!req.clientFromToken) {
+                return res.status(404).json({ success: false, message: 'Cliente no encontrado para el usuario autenticado' });
+            }
+            if (String(review.clienteId) !== String(req.clientFromToken._id)) {
+                return res.status(403).json({ success: false, message: 'Solo puedes eliminar tu propia reseña' });
+            }
+        }
+
+        await Review.findByIdAndDelete(id);
 
         res.status(200).json({
             success: true,

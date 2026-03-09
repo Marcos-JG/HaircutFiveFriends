@@ -1,8 +1,27 @@
 import Appointment from "./appointment.model.js";
+import Barber from "../barber/barber.model.js";
+import Client from "../client/client.model.js";
 
 export const createAppointment = async (req, res) => {
     try {
-        const appointment = new Appointment(req.body);
+        const isUser = req.userRole === 'USER_ROLE';
+        const payload = { ...req.body };
+
+        if (isUser) {
+            const client = req.clientFromToken || await Client.findOne({ userId: req.userId });
+            if (!client) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Cliente no encontrado para el usuario autenticado'
+                });
+            }
+            payload.clienteId = client._id;
+
+            const [randomBarber] = await Barber.aggregate([{ $sample: { size: 1 } }, { $project: { _id: 1 } }]);
+            payload.barberId = randomBarber ? randomBarber._id : null;
+        }
+
+        const appointment = new Appointment(payload);
         await appointment.save();
 
         const populatedAppointment = await Appointment.findById(appointment._id)

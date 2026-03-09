@@ -24,7 +24,8 @@ const appointmentSchema = new mongoose.Schema(
         barberId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Barber',
-            required: [true, 'El barbero es obligatorio'],
+            required: false,
+            default: null,
         },
         serviceId: {
             type: mongoose.Schema.Types.ObjectId,

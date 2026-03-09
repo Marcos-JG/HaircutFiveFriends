@@ -14,6 +14,7 @@ import {
     getAverageScoreByBarbero
 } from './review.controller.js';
 import { validateCreateReview, validateUpdateReview } from '../../middlewares/review-validator.js';
+import { validateJWT, authorizeRoles, attachClientFromToken } from '../../middlewares/validate-JWT.js';
 
 const router = express.Router();
 
@@ -41,16 +42,48 @@ const handleMulterAndBody = (req, res, next) => {
 };
 
 // Rutas principales
-router.post('/crear', handleMulterAndBody, validateCreateReview, createReview);         
-router.get('/obtener', getAllReviews);                      
-router.get('/obtener/:id', getReviewById);                  
-router.put('/actualizar/:id', handleMulterAndBody, validateUpdateReview, updateReview);
-router.delete('/eliminar/:id', deleteReview);               // DELETE - Eliminar reseña
+router.post(
+    '/crear',
+    validateJWT,
+    authorizeRoles('USER_ROLE'),
+    attachClientFromToken,
+    handleMulterAndBody,
+    validateCreateReview,
+    createReview
+);         
+router.get(
+    '/obtener',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'),
+    getAllReviews
+);                      
+router.get(
+    '/obtener/:id',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'),
+    getReviewById
+);                  
+router.put(
+    '/actualizar/:id',
+    validateJWT,
+    authorizeRoles('USER_ROLE'),
+    attachClientFromToken,
+    handleMulterAndBody,
+    validateUpdateReview,
+    updateReview
+);
+router.delete(
+    '/eliminar/:id',
+    validateJWT,
+    authorizeRoles('USER_ROLE'),
+    attachClientFromToken,
+    deleteReview
+);               // DELETE - Eliminar reseña
 
 // Rutas de filtrado
-router.get('/barbero/:barberoId', getReviewsByBarbero);     // GET - Reseñas por barbero
-router.get('/cliente/:clienteId', getReviewsByCliente);     // GET - Reseñas por cliente
-router.get('/servicio/:servicioId', getReviewsByServicio);  // GET - Reseñas por servicio
-router.get('/promedio/:barberoId', getAverageScoreByBarbero); // GET - Promedio de barbero
+router.get('/barbero/:barberoId', validateJWT, authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'), getReviewsByBarbero);     // GET - Reseñas por barbero
+router.get('/cliente/:clienteId', validateJWT, authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'), getReviewsByCliente);     // GET - Reseñas por cliente
+router.get('/servicio/:servicioId', validateJWT, authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'), getReviewsByServicio);  // GET - Reseñas por servicio
+router.get('/promedio/:barberoId', validateJWT, authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'), getAverageScoreByBarbero); // GET - Promedio de barbero
 
 export default router;

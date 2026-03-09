@@ -15,7 +15,7 @@ export const validateCreateReview = async (req, res, next) => {
         const { clienteName, barberoId, servicioName, score, comment } = req.body || {};
 
         // Validar cliente nombre
-        if (!clienteName || !clienteName.trim()) {
+        if ((!clienteName || !clienteName.trim()) && !req.clientFromToken) {
             return res.status(400).json({
                 success: false,
                 message: 'El nombre del cliente es requerido'

@@ -6,6 +6,14 @@ import { cloudinary } from '../../middlewares/file-uploader.js';
 export const createClient = async (req, res) => {
     try {
         const payload = { ...req.body };
+
+        if (req.userId) {
+            payload.userId = req.userId;
+        }
+
+        if (!payload.profilePicture && req.auth?.profilePicture) {
+            payload.profilePicture = req.auth.profilePicture;
+        }
         if (req.file) {
             payload.profilePicture = req.file.path;
         }

@@ -12,15 +12,17 @@ const validStatuses = ['PENDIENTE', 'CANCELADA', 'COMPLETADA'];
 // Validaciones para crear cita
 export const validateCreateAppointment = [
     body('clienteId')
-        .trim()
-        .notEmpty().withMessage('El ID del cliente es requerido')
-        .custom((value) => {
+        .custom(async (value, { req }) => {
+            if (req.userRole === 'USER_ROLE' && req.clientFromToken) {
+                req.body.clienteId = req.clientFromToken._id.toString();
+                return true;
+            }
+            if (!value) {
+                throw new Error('El ID del cliente es requerido');
+            }
             if (!mongoose.isValidObjectId(value)) {
                 throw new Error('El ID del cliente no es válido');
             }
-            return true;
-        })
-        .custom(async (value) => {
             const client = await Client.findById(value);
             if (!client) {
                 throw new Error('El cliente no existe');
@@ -29,15 +31,16 @@ export const validateCreateAppointment = [
         }),
 
     body('barberId')
-        .trim()
-        .notEmpty().withMessage('El ID del barbero es requerido')
-        .custom((value) => {
+        .custom(async (value, { req }) => {
+            if (req.userRole === 'USER_ROLE' && !value) {
+                return true;
+            }
+            if (!value) {
+                throw new Error('El ID del barbero es requerido');
+            }
             if (!mongoose.isValidObjectId(value)) {
                 throw new Error('El ID del barbero no es válido');
             }
-            return true;
-        })
-        .custom(async (value) => {
             const barber = await Barber.findById(value);
             if (!barber) {
                 throw new Error('El barbero no existe');

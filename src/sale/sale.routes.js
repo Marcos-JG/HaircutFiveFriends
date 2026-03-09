@@ -13,22 +13,64 @@ import {
 import { uploadProfilePicture } from '../../middlewares/file-uploader.js'
 import { validateSaleRequest } from '../../middlewares/sale-validator.js'
 import requireAddressForDomicilio from '../../middlewares/requireAddressForDomicilio.js'
+import { validateJWT, authorizeRoles } from '../../middlewares/validate-JWT.js'
 
 const router = Router()
 
-router.post('/create', uploadProfilePicture.none(), validateSaleRequest, requireAddressForDomicilio, createSale)
+router.post(
+    '/create',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'),
+    uploadProfilePicture.none(),
+    validateSaleRequest,
+    requireAddressForDomicilio,
+    createSale
+)
 
-router.get('/my-sales', getMySales)
+router.get(
+    '/my-sales',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'),
+    getMySales
+)
 
-router.get('/', getSales)
+router.get(
+    '/',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'EMPLOYEE_ROLE'),
+    getSales
+)
 
-router.put('/:id', uploadProfilePicture.none(), requireAddressForDomicilio, updateSale)
+router.put(
+    '/:id',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'EMPLOYEE_ROLE'),
+    uploadProfilePicture.none(),
+    requireAddressForDomicilio,
+    updateSale
+)
 
-router.put('/:id/details', uploadProfilePicture.none(), addDetailsToSale)
+router.put(
+    '/:id/details',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'USER_ROLE', 'EMPLOYEE_ROLE'),
+    uploadProfilePicture.none(),
+    addDetailsToSale
+)
 
-router.delete('/:id', deleteSale)
+router.delete(
+    '/:id',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'EMPLOYEE_ROLE'),
+    deleteSale
+)
 
-router.get('/:id', getSaleById)
+router.get(
+    '/:id',
+    validateJWT,
+    authorizeRoles('ADMIN_ROLE', 'EMPLOYEE_ROLE'),
+    getSaleById
+)
 
 
 export default router
