@@ -36,6 +36,21 @@ const options = {
             { name: 'AI Haircut', description: 'Generación de cortes con IA' },
             { name: 'AI Haircut Image', description: 'Utilidades de imagen base64 para IA' }
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                    description: 'Ingresa tu token JWT (Bearer)'
+                }
+            }
+        },
+        security: [
+            {
+                bearerAuth: []
+            }
+        ],
         paths: {
             '/Health': {
                 get: {
