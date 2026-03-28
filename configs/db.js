@@ -29,7 +29,7 @@ export const dbConnection = async () => {
         console.log('MongoDB | desconectado a mongoDB');
         });
 
-        await mongoose.connect(process.env.URI_MONGO, {
+        await mongoose.connect(process.env.URI_MONGO || "mongodb://localhost:27017/HaircutFiveFriends", {
             serverSelectionTimeoutMS: 5000,
             maxPoolSize: 10
         });

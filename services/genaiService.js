@@ -4,16 +4,17 @@ const { VertexAI } = pkg;
 import { GoogleGenAI } from "@google/genai";
 import fs from "fs/promises";
 import path from "path";
+import 'dotenv/config';
 
 // ── Configuración ─────────────────────────────────────────────────────────────
-const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJECT_ID;
+const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJECT_ID || "project-4be61ab3-b84b-41d6-bf6";
 const GOOGLE_VERTEX_LOCATION = process.env.GOOGLE_VERTEX_LOCATION || "us-central1";
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyDfaMghcRlRhTk4N50xd5jvaDQva8Wg3Zk";
 
 if (!GOOGLE_PROJECT_ID) throw new Error("Falta GOOGLE_PROJECT_ID en el entorno");
 if (!GEMINI_API_KEY) throw new Error("Falta GEMINI_API_KEY en el entorno");
 
-const TEXT_MODEL = process.env.VERTEX_TEXT_MODEL || "gemini-1.5-flash";
+const TEXT_MODEL = process.env.VERTEX_TEXT_MODEL || "gemini-2.5-flash";
 const GEMINI_IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-3-pro-image-preview";
 
 // Cliente Vertex AI — para describeFace
@@ -99,7 +100,7 @@ function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
   );
 }
 
-// ── describeFace (Vertex AI) ──────────────────────────────────────────────────
+// ── describeFace (Gemini API via Fetch) ──────────────────────────────────────
 export async function describeFace({ imageBase64, imagePath, mimeType }) {
   const hasPath = Boolean(imagePath);
   const { base64, mime } = hasPath
@@ -108,44 +109,35 @@ export async function describeFace({ imageBase64, imagePath, mimeType }) {
 
   if (!base64) throw new Error("No se proporcionó imagen en base64");
 
-  const textModel = vertex.getGenerativeModel({ model: TEXT_MODEL });
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const body = {
+    contents: [{
+      parts: [
+        { text: "Analiza el rostro y devuelve de forma concisa: forma de cara, textura y color de cabello actual, líneas faciales destacadas, y el estilo de corte más recomendado según las características del rostro." },
+        { inlineData: { data: base64, mimeType: mime } }
+      ]
+    }]
+  };
 
-  const response = await generateWithRetry(() =>
-    textModel.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text:
-                "Analiza el rostro y devuelve de forma concisa: " +
-                "forma de cara, textura y color de cabello actual, " +
-                "líneas faciales destacadas, y el estilo de corte más recomendado " +
-                "según las características del rostro.",
-            },
-            { inlineData: { data: base64, mimeType: mime } },
-          ],
-        },
-      ],
-    })
-  );
+  const response = await generateWithRetry(async () => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Gemini API Error (${res.status}): ${errorText}`);
+    }
+    return res.json();
+  });
 
-  const parts = response.response?.candidates?.[0]?.content?.parts || [];
+  const parts = response.candidates?.[0]?.content?.parts || [];
   return parts.map((p) => p.text).filter(Boolean).join(" ");
 }
 
-// ── proposeHaircutImage (Gemini AI Studio) ────────────────────────────────────
-/**
- * @param {string} faceSummary          - Resultado de describeFace
- * @param {object} options
- * @param {string} [options.imageBase64]
- * @param {string} [options.imagePath]
- * @param {string} [options.mimeType]
- * @param {string} [options.haircutName]   - Nombre del corte
- * @param {string} [options.description]   - Descripción libre
- * @param {string} [options.length]        - Largo deseado
- * @param {string} [options.style]         - Estilo deseado
- */
+// ── proposeHaircutImage (Gemini API via Fetch) ────────────────────────────────
 export async function proposeHaircutImage(
   faceSummary,
   { imageBase64, imagePath, mimeType, haircutName, description, length, style } = {}
@@ -157,61 +149,42 @@ export async function proposeHaircutImage(
 
   if (!base64) throw new Error("No se proporcionó imagen para editar");
 
-  const referenceBytes = Buffer.byteLength(base64, "base64");
-  if (referenceBytes < 1024)
-    throw new Error("La imagen de referencia es demasiado pequeña (<1KB)");
-  if (referenceBytes > 8 * 1024 * 1024)
-    throw new Error("La imagen de referencia supera 8MB; reduce tamaño o compresión");
+  const editPrompt = buildHaircutPrompt(faceSummary, { haircutName, description, length, style });
 
-  const editPrompt = buildHaircutPrompt(faceSummary, {
-    haircutName,
-    description,
-    length,
-    style,
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const body = {
+    contents: [{
+      parts: [
+        { inlineData: { data: base64, mimeType: mime } },
+        { text: editPrompt }
+      ]
+    }],
+    generationConfig: {
+      responseModalities: ["IMAGE", "TEXT"]
+    }
+  };
+
+  const response = await generateWithRetry(async () => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Gemini API Error (${res.status}): ${errorText}`);
+    }
+    return res.json();
   });
 
-  console.info("[gemini-image] Editando imagen", {
-    model: GEMINI_IMAGE_MODEL,
-    mime,
-    referenceBytes,
-    haircutName,
-    length,
-    style,
-  });
-
-  const response = await generateWithRetry(() =>
-    geminiAI.models.generateContent({
-      model: GEMINI_IMAGE_MODEL,
-      contents: [
-        {
-          role: "user",
-          parts: [
-            { inlineData: { mimeType: mime, data: base64 } },
-            { text: editPrompt },
-          ],
-        },
-      ],
-      config: {
-        responseModalities: ["IMAGE", "TEXT"],
-      },
-    })
-  );
-
-  const rawCandidate = response?.candidates?.[0];
-  console.log("[debug] candidate completo:", JSON.stringify(rawCandidate, null, 2));
-
+  const rawCandidate = response.candidates?.[0];
   const parts = rawCandidate?.content?.parts ?? [];
   const imagePart = parts.find((p) => p.inlineData?.data);
 
   if (!imagePart) {
     const textParts = parts.filter((p) => p.text).map((p) => p.text).join(" ");
-    console.error("[gemini-image] Sin imagen en respuesta. Texto:", textParts);
-    throw new Error(
-      "Gemini no devolvió una imagen. " +
-        (textParts
-          ? `Motivo: ${textParts}`
-          : "Revisa la consola para más detalles.")
-    );
+    throw new Error(`Gemini no devolvió una imagen. Motivo: ${textParts || "Desconocido"}`);
   }
 
   return imagePart.inlineData.data;
