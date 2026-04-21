@@ -34,6 +34,69 @@ function sanitizeBase64(b64) {
   return b64.replace(/\s+/g, "");
 }
 
+function extractJsonFromText(text) {
+  if (!text) return null;
+
+  const fenced = text.match(/```json\s*([\s\S]*?)\s*```/i);
+  if (fenced?.[1]) return fenced[1].trim();
+
+  const firstBrace = text.indexOf("{");
+  const lastBrace = text.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    return text.slice(firstBrace, lastBrace + 1).trim();
+  }
+
+  return null;
+}
+
+function toStructuredFaceSummary(rawText) {
+  const empty = {
+    faceShape: null,
+    hairTexture: null,
+    hairColor: null,
+    facialLines: null,
+    recommendedHaircutStyle: null,
+  };
+
+  const jsonCandidate = extractJsonFromText(rawText);
+  if (!jsonCandidate) return empty;
+
+  try {
+    const parsed = JSON.parse(jsonCandidate);
+    return {
+      faceShape: parsed.faceShape ?? parsed.formaCara ?? null,
+      hairTexture: parsed.hairTexture ?? parsed.texturaCabello ?? null,
+      hairColor: parsed.hairColor ?? parsed.colorCabello ?? null,
+      facialLines: parsed.facialLines ?? parsed.lineasFaciales ?? null,
+      recommendedHaircutStyle:
+        parsed.recommendedHaircutStyle ?? parsed.estiloCorteRecomendado ?? null,
+    };
+  } catch {
+    return empty;
+  }
+}
+
+function faceSummaryForPrompt(faceSummary) {
+  if (!faceSummary) return "No face analysis available.";
+  if (typeof faceSummary === "string") return faceSummary;
+
+  const {
+    faceShape,
+    hairTexture,
+    hairColor,
+    facialLines,
+    recommendedHaircutStyle,
+  } = faceSummary;
+
+  return [
+    `face shape: ${faceShape || "unknown"}`,
+    `hair texture: ${hairTexture || "unknown"}`,
+    `hair color: ${hairColor || "unknown"}`,
+    `facial lines: ${facialLines || "unknown"}`,
+    `recommended haircut style: ${recommendedHaircutStyle || "unknown"}`,
+  ].join(", ");
+}
+
 async function generateWithRetry(fn, { retries = 3, baseDelayMs = 1000 } = {}) {
   let attempt = 0;
   const retriableCodes = new Set([429, 503]);
@@ -75,6 +138,7 @@ async function loadImageAsBase64FromPath(imagePath) {
  */
 function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
   const { haircutName, description, length, style } = haircutOptions;
+  const faceSummaryText = faceSummaryForPrompt(faceSummary);
 
   const haircutParts = [];
 
@@ -96,7 +160,7 @@ function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
     `STRICTLY PRESERVE: face identity, skin tone, facial structure, eye color, ` +
     `eyebrows, beard, mustache, background, lighting and clothing. ` +
     `Do NOT alter anything except the hair on top of the head and sides. ` +
-    `Face analysis for reference: ${faceSummary}.`
+    `Face analysis for reference: ${faceSummaryText}.`
   );
 }
 
@@ -114,7 +178,7 @@ export async function describeFace({ imageBase64, imagePath, mimeType }) {
   const body = {
     contents: [{
       parts: [
-        { text: "Analiza el rostro y devuelve de forma concisa: forma de cara, textura y color de cabello actual, líneas faciales destacadas, y el estilo de corte más recomendado según las características del rostro." },
+        { text: "Analiza el rostro y responde SOLO con un JSON válido (sin markdown ni texto extra) con estas claves exactas: faceShape, hairTexture, hairColor, facialLines, recommendedHaircutStyle. Cada valor debe ser una frase breve en español." },
         { inlineData: { data: base64, mimeType: mime } }
       ]
     }]
@@ -134,7 +198,8 @@ export async function describeFace({ imageBase64, imagePath, mimeType }) {
   });
 
   const parts = response.candidates?.[0]?.content?.parts || [];
-  return parts.map((p) => p.text).filter(Boolean).join(" ");
+  const rawText = parts.map((p) => p.text).filter(Boolean).join(" ");
+  return toStructuredFaceSummary(rawText);
 }
 
 // ── proposeHaircutImage (Gemini API via Fetch) ────────────────────────────────
