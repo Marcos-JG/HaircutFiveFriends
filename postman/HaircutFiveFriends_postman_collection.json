@@ -17,6 +17,16 @@
       "type": "string"
     },
     {
+      "key": "todoGeminiBaseUrl",
+      "value": "http://localhost:3007/api",
+      "type": "string"
+    },
+    {
+      "key": "todoGeminiUserId",
+      "value": "REEMPLAZAR_USER_ID",
+      "type": "string"
+    },
+    {
       "key": "clientId",
       "value": "REEMPLAZAR_CLIENT_ID",
       "type": "string"
@@ -1006,9 +1016,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/ai-haircut-image/preview",
+              "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/preview",
               "host": [
-                "{{baseUrl}}"
+                "{{todoGeminiBaseUrl}}"
               ],
               "path": [
                 "ai-haircut-image",
@@ -1033,9 +1043,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/ai-haircut-image/save",
+              "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/save",
               "host": [
-                "{{baseUrl}}"
+                "{{todoGeminiBaseUrl}}"
               ],
               "path": [
                 "ai-haircut-image",
@@ -2184,9 +2194,9 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/ai-haircut/analyze",
+              "raw": "{{todoGeminiBaseUrl}}/ai-haircut/analyze",
               "host": [
-                "{{baseUrl}}"
+                "{{todoGeminiBaseUrl}}"
               ],
               "path": [
                 "ai-haircut",
@@ -2276,6 +2286,174 @@
               ]
             }
           }
+        },
+        {
+          "name": "TodoGemini",
+          "item": [
+            {
+              "name": "Health Check (TodoGemini)",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/health",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "description": "Verifica que TodoGemini esta activo"
+            },
+            {
+              "name": "Auth Login (Proxy)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/auth/login",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "description": "Proxy al AuthService"
+            },
+            {
+              "name": "Chat (Send Message)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{todoGeminiUserId}}\",\n  \"input\": \"Hola\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/chat",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "chat"
+                  ]
+                }
+              },
+              "description": "Envia un mensaje al chatbot y guarda el historial"
+            },
+            {
+              "name": "Chat History",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/chat/{{todoGeminiUserId}}",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "chat",
+                    "{{todoGeminiUserId}}"
+                  ]
+                }
+              },
+              "description": "Obtiene historial de chat por userId"
+            },
+            {
+              "name": "Chat Clear History",
+              "request": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/chat/{{todoGeminiUserId}}",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "chat",
+                    "{{todoGeminiUserId}}"
+                  ]
+                }
+              },
+              "description": "Elimina historial de chat por userId"
+            },
+            {
+              "name": "Vision Recommend Haircut",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"imageBase64\": \"<base64_aqui>\",\n  \"mimeType\": \"image/jpeg\",\n  \"haircutName\": \"fade\",\n  \"description\": \"\",\n  \"length\": \"short\",\n  \"style\": \"modern\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/vision/recommend",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "vision",
+                    "recommend"
+                  ]
+                }
+              },
+              "description": "Analiza el rostro y recomienda corte usando Gemini"
+            },
+            {
+              "name": "Reviews Analyze Barber",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/reviews/analyze/{{barberId}}",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "analyze",
+                    "{{barberId}}"
+                  ]
+                }
+              },
+              "description": "Analiza reseñas de un barbero con Gemini"
+            }
+          ]
         }
       ]
     }

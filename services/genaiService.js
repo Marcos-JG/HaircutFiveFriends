@@ -98,7 +98,7 @@ function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
     `STRICTLY PRESERVE: face identity, skin tone, facial structure, eye color, ` +
     `eyebrows, beard, mustache, background, lighting and clothing. ` +
     `Do NOT alter anything except the hair on top of the head and sides. ` +
-  `If any text is returned, write it in plain Spanish with no markdown. ` +
+    `If any text is returned, write it in plain Spanish with no markdown. ` +
     `Face analysis for reference: ${faceSummary}.`
   );
 }
