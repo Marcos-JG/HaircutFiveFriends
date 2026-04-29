@@ -100,7 +100,7 @@ function faceSummaryForPrompt(faceSummary) {
 async function generateWithRetry(fn, { retries = 3, baseDelayMs = 1000 } = {}) {
   let attempt = 0;
   const retriableCodes = new Set([429, 503]);
-  for (;;) {
+  for (; ;) {
     try {
       return await fn();
     } catch (err) {
@@ -144,8 +144,8 @@ function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
 
   if (haircutName) haircutParts.push(`haircut name: ${haircutName}`);
   if (description) haircutParts.push(`description: ${description}`);
-  if (length)      haircutParts.push(`length: ${length}`);
-  if (style)       haircutParts.push(`style: ${style}`);
+  if (length) haircutParts.push(`length: ${length}`);
+  if (style) haircutParts.push(`style: ${style}`);
 
   const haircutSpec =
     haircutParts.length > 0
@@ -157,10 +157,13 @@ function buildHaircutPrompt(faceSummary, haircutOptions = {}) {
     `Edit ONLY the hairstyle of the person in this photo. ` +
     `Apply the following haircut — ${haircutSpec}. ` +
     `Make the result hyper-realistic, as if done by a professional barber. ` +
+    `Do NOT generate new hair, facial hair, body hair, or extra strands that were not present in the original image. ` +
+    `Only reshape, trim, fade, or restyle the person's existing scalp hair according to the requested haircut. ` +
     `STRICTLY PRESERVE: face identity, skin tone, facial structure, eye color, ` +
     `eyebrows, beard, mustache, background, lighting and clothing. ` +
     `Do NOT alter anything except the hair on top of the head and sides. ` +
-    `Face analysis for reference: ${faceSummaryText}.`
+    `If any text is returned, write it in plain Spanish with no markdown. ` +
+    `Face analysis for reference: ${faceSummary}.`
   );
 }
 
@@ -174,7 +177,7 @@ export async function describeFace({ imageBase64, imagePath, mimeType }) {
   if (!base64) throw new Error("No se proporcionó imagen en base64");
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-  
+
   const body = {
     contents: [{
       parts: [
@@ -217,7 +220,7 @@ export async function proposeHaircutImage(
   const editPrompt = buildHaircutPrompt(faceSummary, { haircutName, description, length, style });
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-  
+
   const body = {
     contents: [{
       parts: [
