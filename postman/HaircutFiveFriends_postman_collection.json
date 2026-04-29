@@ -17,6 +17,21 @@
       "type": "string"
     },
     {
+      "key": "authBaseUrl",
+      "value": "http://localhost:3005/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "REEMPLAZAR_ADMIN_TOKEN",
+      "type": "string"
+    },
+    {
+      "key": "userToken",
+      "value": "REEMPLAZAR_USER_TOKEN",
+      "type": "string"
+    },
+    {
       "key": "todoGeminiBaseUrl",
       "value": "http://localhost:3007/api",
       "type": "string"
@@ -97,6 +112,29 @@
       }
     ]
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const authHeader = pm.request.headers.get('Authorization') || pm.request.headers.get('authorization') || '';",
+          "const adminToken = pm.variables.get('adminToken');",
+          "const userToken = pm.variables.get('userToken');",
+          "const authToken = pm.variables.get('authToken');",
+          "let token = null;",
+          "if (/\\{\\{adminToken\\}\\}/.test(authHeader)) { token = adminToken; }",
+          "else if (/\\{\\{userToken\\}\\}/.test(authHeader)) { token = userToken; }",
+          "else if (/\\{\\{authToken\\}\\}/.test(authHeader)) { token = authToken; }",
+          "else if (/^Bearer\\s+/i.test(authHeader)) { token = authHeader.replace(/^Bearer\\s+/i, ''); }",
+          "else { token = authToken || userToken || adminToken; }",
+          "if (token && !pm.request.headers.has('x-token')) {",
+          "  pm.request.headers.add({ key: 'x-token', value: token });",
+          "}"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "Health",
@@ -994,65 +1032,6 @@
               ]
             },
             "description": "Elimina un corte del sistema"
-          }
-        }
-      ]
-    },
-    {
-      "name": "AI Haircut Image",
-      "item": [
-        {
-          "name": "Preview Base64 Image",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"imageBase64\": \"<pegue_base64_aqui>\",\n  \"mimeType\": \"image/png\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/preview",
-              "host": [
-                "{{todoGeminiBaseUrl}}"
-              ],
-              "path": [
-                "ai-haircut-image",
-                "preview"
-              ]
-            },
-            "description": "Devuelve la imagen decodificada desde base64 (útil para probar render)."
-          }
-        },
-        {
-          "name": "Save Multiple Base64 Images",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"images\": [\n    { \"imageBase64\": \"<base64_img_1>\", \"mimeType\": \"image/png\", \"filename\": \"img1.png\" },\n    { \"imageBase64\": \"<base64_img_2>\", \"mimeType\": \"image/jpeg\", \"filename\": \"img2.jpg\" }\n  ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/save",
-              "host": [
-                "{{todoGeminiBaseUrl}}"
-              ],
-              "path": [
-                "ai-haircut-image",
-                "save"
-              ]
-            },
-            "description": "Guarda varias imágenes base64 en /tmp y devuelve la lista de rutas locales."
           }
         }
       ]
@@ -2138,78 +2117,6 @@
       ]
     },
     {
-      "name": "AI Haircut",
-      "description": "Generación de propuestas de corte mediante IA. Usa Vertex AI (Gemini) para analizar el rostro y Gemini AI Studio para editar la imagen con el corte solicitado.",
-      "item": [
-        {
-          "name": "Analyze Face (AI Haircut)",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": "",
-                  "description": "Foto del cliente (alternativa a imageBase64)"
-                },
-                {
-                  "key": "imageBase64",
-                  "value": "",
-                  "type": "text",
-                  "description": "Imagen en base64 (alternativa al archivo)"
-                },
-                {
-                  "key": "mimeType",
-                  "value": "image/jpeg",
-                  "type": "text",
-                  "description": "image/jpeg | image/png (default: image/jpeg)"
-                },
-                {
-                  "key": "haircutName",
-                  "value": "fade",
-                  "type": "text",
-                  "description": "Nombre del corte (ej: undercut, pompadour, fade)"
-                },
-                {
-                  "key": "description",
-                  "value": "",
-                  "type": "text",
-                  "description": "Descripción libre del corte deseado"
-                },
-                {
-                  "key": "length",
-                  "value": "short",
-                  "type": "text",
-                  "description": "short | medium | long"
-                },
-                {
-                  "key": "style",
-                  "value": "modern",
-                  "type": "text",
-                  "description": "classic | modern | urban"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{todoGeminiBaseUrl}}/ai-haircut/analyze",
-              "host": [
-                "{{todoGeminiBaseUrl}}"
-              ],
-              "path": [
-                "ai-haircut",
-                "analyze"
-              ]
-            },
-            "description": "Analiza el rostro del cliente con Vertex AI y genera una imagen con el corte solicitado usando Gemini.\n\n**Imagen:** Sube un archivo en el campo 'image' (multipart) O envía la foto en base64 en 'imageBase64'.\n\n**Parámetros del corte (todos opcionales):**\n- haircutName: nombre del corte (ej: fade, undercut, pompadour)\n- description: descripción libre del resultado esperado\n- length: short | medium | long\n- style: classic | modern | urban\n\n**Respuesta:**\n```json\n{\n  \"success\": true,\n  \"faceSummary\": \"Forma de cara ovalada...\",\n  \"haircutImageBase64\": \"<base64 de la imagen generada>\",\n  \"haircutParams\": {\n    \"haircutName\": \"fade\",\n    \"description\": null,\n    \"length\": \"short\",\n    \"style\": \"modern\"\n  }\n}\n```"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "Generar Estadísticas PDF",
       "request": {
         "method": "GET",
@@ -2286,6 +2193,225 @@
               ]
             }
           }
+        }
+      ]
+    },
+    {
+          "name": "AuthService-The5FadeFriends",
+          "item": [
+            {
+              "name": "Health",
+              "item": [
+                {
+                  "name": "Health check",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": { "raw": "{{authBaseUrl}}/health", "host": ["{{authBaseUrl}}"], "path": ["health"] }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Auth",
+              "item": [
+                {
+                  "name": "Signup request (public)",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"Juan Perez\",\n  \"email\": \"user@example.com\",\n  \"password\": \"Secret123!\",\n  \"phone\": \"12345678\",\n  \"profilePicture\": \"\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/signup-request", "host": ["{{authBaseUrl}}"], "path": ["auth", "signup-request"] }
+                  }
+                },
+                {
+                  "name": "List signup requests (admin)",
+                  "request": {
+                    "method": "GET",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/auth/signup-requests", "host": ["{{authBaseUrl}}"], "path": ["auth", "signup-requests"] }
+                  }
+                },
+                {
+                  "name": "Approve signup request (admin)",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/auth/signup-requests/<requestId>/approve", "host": ["{{authBaseUrl}}"], "path": ["auth", "signup-requests", "<requestId>", "approve"] }
+                  }
+                },
+                {
+                  "name": "Register (form-data)",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        { "key": "name", "value": "Juan Perez", "type": "text" },
+                        { "key": "email", "value": "user@example.com", "type": "text" },
+                        { "key": "password", "value": "Secret123!", "type": "text" },
+                        { "key": "phone", "value": "12345678", "type": "text" },
+                        { "key": "profilePicture", "type": "file", "src": "" }
+                      ]
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/register", "host": ["{{authBaseUrl}}"], "path": ["auth", "register"] }
+                  }
+                },
+                {
+                  "name": "Login",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Secret123!\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/login", "host": ["{{authBaseUrl}}"], "path": ["auth", "login"] }
+                  }
+                },
+                {
+                  "name": "Verify email",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"token\": \"<verification-token>\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/verify-email", "host": ["{{authBaseUrl}}"], "path": ["auth", "verify-email"] }
+                  }
+                },
+                {
+                  "name": "Resend verification",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"user@example.com\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/resend-verification", "host": ["{{authBaseUrl}}"], "path": ["auth", "resend-verification"] }
+                  }
+                },
+                {
+                  "name": "Forgot password",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"user@example.com\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/forgot-password", "host": ["{{authBaseUrl}}"], "path": ["auth", "forgot-password"] }
+                  }
+                },
+                {
+                  "name": "Reset password",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"token\": \"<reset-token>\",\n  \"newPassword\": \"NewPass123!\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/reset-password", "host": ["{{authBaseUrl}}"], "path": ["auth", "reset-password"] }
+                  }
+                },
+                {
+                  "name": "Profile (me)",
+                  "request": {
+                    "method": "GET",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{userToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/auth/profile", "host": ["{{authBaseUrl}}"], "path": ["auth", "profile"] }
+                  }
+                },
+                {
+                  "name": "Profile by id",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Content-Type", "value": "application/json" } ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"userId\": \"<user-id>\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/auth/profile/by-id", "host": ["{{authBaseUrl}}"], "path": ["auth", "profile", "by-id"] }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Users",
+              "item": [
+                {
+                  "name": "Create employee",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"Empleado Uno\",\n  \"email\": \"empleado@example.com\",\n  \"password\": \"Secret123!\",\n  \"phone\": \"12345678\",\n  \"profilePicture\": \"\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/users/employee", "host": ["{{authBaseUrl}}"], "path": ["users", "employee"] }
+                  }
+                },
+                {
+                  "name": "Update user role",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"roleName\": \"EMPLOYEE_ROLE\"\n}",
+                      "options": { "raw": { "language": "json" } }
+                    },
+                    "url": { "raw": "{{authBaseUrl}}/users/<userId>/role", "host": ["{{authBaseUrl}}"], "path": ["users", "<userId>", "role"] }
+                  }
+                },
+                {
+                  "name": "Get user roles",
+                  "request": {
+                    "method": "GET",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{userToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/users/<userId>/roles", "host": ["{{authBaseUrl}}"], "path": ["users", "<userId>", "roles"] }
+                  }
+                },
+                {
+                  "name": "Get users by role",
+                  "request": {
+                    "method": "GET",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/users/by-role/EMPLOYEE_ROLE", "host": ["{{authBaseUrl}}"], "path": ["users", "by-role", "EMPLOYEE_ROLE"] }
+                  }
+                },
+                {
+                  "name": "Get all users",
+                  "request": {
+                    "method": "GET",
+                    "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+                    "url": { "raw": "{{authBaseUrl}}/users/all", "host": ["{{authBaseUrl}}"], "path": ["users", "all"] }
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "TodoGemini",
@@ -2436,6 +2562,135 @@
               "description": "Analiza el rostro y recomienda corte usando Gemini"
             },
             {
+              "name": "AI Haircut Analyze",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "src": "",
+                      "description": "Foto del cliente (alternativa a imageBase64)"
+                    },
+                    {
+                      "key": "imageBase64",
+                      "value": "",
+                      "type": "text",
+                      "description": "Imagen en base64 (alternativa al archivo)"
+                    },
+                    {
+                      "key": "mimeType",
+                      "value": "image/jpeg",
+                      "type": "text",
+                      "description": "image/jpeg | image/png (default: image/jpeg)"
+                    },
+                    {
+                      "key": "haircutName",
+                      "value": "fade",
+                      "type": "text",
+                      "description": "Nombre del corte (ej: undercut, pompadour, fade)"
+                    },
+                    {
+                      "key": "description",
+                      "value": "",
+                      "type": "text",
+                      "description": "Descripcion libre del corte deseado"
+                    },
+                    {
+                      "key": "length",
+                      "value": "short",
+                      "type": "text",
+                      "description": "short | medium | long"
+                    },
+                    {
+                      "key": "style",
+                      "value": "modern",
+                      "type": "text",
+                      "description": "classic | modern | urban"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/ai-haircut/analyze",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "ai-haircut",
+                    "analyze"
+                  ]
+                }
+              },
+              "description": "Analiza el rostro y genera una imagen con el corte solicitado"
+            },
+            {
+              "name": "AI Haircut Image Preview",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"imageBase64\": \"<base64_aqui>\",\n  \"mimeType\": \"image/png\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/preview",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "ai-haircut-image",
+                    "preview"
+                  ]
+                }
+              },
+              "description": "Devuelve la imagen decodificada desde base64"
+            },
+            {
+              "name": "AI Haircut Image Save",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"images\": [\n    { \"imageBase64\": \"<base64_img_1>\", \"mimeType\": \"image/png\", \"filename\": \"img1.png\" },\n    { \"imageBase64\": \"<base64_img_2>\", \"mimeType\": \"image/jpeg\", \"filename\": \"img2.jpg\" }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{todoGeminiBaseUrl}}/ai-haircut-image/save",
+                  "host": [
+                    "{{todoGeminiBaseUrl}}"
+                  ],
+                  "path": [
+                    "ai-haircut-image",
+                    "save"
+                  ]
+                }
+              },
+              "description": "Guarda varias imagenes base64 en /tmp y devuelve rutas locales"
+            },
+            {
               "name": "Reviews Analyze Barber",
               "request": {
                 "method": "GET",
@@ -2455,7 +2710,5 @@
             }
           ]
         }
-      ]
-    }
   ]
 }
